@@ -10,4 +10,11 @@
       directory="static"
       />
 
+  <browser:page
+    for="*"
+    name="contactlist.add-to-list"
+    class=".addtolist.add_to_list"
+    permission="zope2.View"
+    />
+
 </configure>

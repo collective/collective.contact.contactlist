@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<object name="portal_actions" meta_type="Plone Actions Tool"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <object name="object_buttons" meta_type="CMF Action Category">
+  <object name="contactlist-addtolist"
+     meta_type="CMF Action" i18n:domain="collective.contact.contactlist">
+   <property name="title" i18n:translate="">Add to list</property>
+   <property name="description"
+      i18n:translate="">Add the contact to a contact list</property>
+   <property
+      name="url_expr">python:portal_url + '/@@contactlist.add-to-list?form.widgets.contacts:list='+'/'.join(object.getPhysicalPath())</property>
+   <property name="link_target"></property>
+   <property name="icon_expr"></property>
+   <property name="available_expr">context/@@canaddtolist</property>
+   <property name="permissions"/>
+   <property name="visible">True</property>
+  </object>
+ </object>
+</object>
