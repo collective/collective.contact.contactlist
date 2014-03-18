@@ -16,4 +16,17 @@
    <property name="visible">True</property>
   </object>
  </object>
+ <object name="user" meta_type="CMF Action Category">
+  <object name="contact-contactlist-mylists" meta_type="CMF Action"
+     i18n:domain="collective.contact.contactlist">
+   <property name="title" i18n:translate="">My contact lists</property>
+   <property name="description" i18n:translate=""></property>
+   <property name="url_expr">context/@@mylistsurl</property>
+   <property name="link_target"></property>
+   <property name="icon_expr"></property>
+   <property name="available_expr"></property>
+   <property name="permissions"/>
+   <property name="visible">True</property>
+  </object>
+ </object>
 </object>

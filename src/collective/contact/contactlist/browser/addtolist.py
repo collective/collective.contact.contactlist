@@ -1,11 +1,13 @@
 from zope.interface import Interface
 from zope import schema
+from zope.schema.interfaces import InvalidValue
 from zope.i18nmessageid import MessageFactory
 
 from z3c.form import form
 from z3c.form import field
 from z3c.form import button
 from z3c.form.interfaces import HIDDEN_MODE
+from z3c.form.error import ErrorViewSnippet
 
 from five import grok
 
@@ -18,8 +20,6 @@ from collective.contact.widget import schema as contactsschema
 from collective.contact.widget.interfaces import IContactContent
 from collective.contact.contactlist import _, api
 from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
-from z3c.form.error import ErrorViewSnippet
-from zope.schema._bootstrapinterfaces import InvalidValue
 
 
 PMF = MessageFactory('plone')
@@ -52,7 +52,7 @@ class IAddToList(Interface):
 
     title = schema.TextLine(title=_(u"List title"), required=False)
 
-    description = schema.Text(title=_(u"Description"), required=False)
+    description = schema.Text(title=PMF(u"Description"), required=False)
 
     contacts = contactsschema.ContactList()
 
@@ -112,8 +112,8 @@ class AddToListForm(form.Form):
                             None)
         error.message = message
         errors += (error,)
-        form.widgets[fieldname].error = error
-        form.widgets.errors += (error,)
+        self.widgets[fieldname].error = error
+        self.widgets.errors += (error,)
         return errors
 
 
