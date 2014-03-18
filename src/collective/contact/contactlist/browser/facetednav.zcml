@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="collective.contact.contactlist">
+
+  <browser:viewlet
+      name="collective.contact.facetednav.batchactions.addtolist"
+      manager="collective.contact.facetednav.browser.batchactions.manager.IBatchActions"
+      class="collective.contact.contactlist.browser.facetednav.AddToListAction"
+      permission="zope2.DeleteObjects"
+      />
+
+</configure>

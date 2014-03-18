@@ -117,6 +117,11 @@ class AddToListForm(form.Form):
         return errors
 
 
+    @button.buttonAndHandler(PMF('Cancel'), name="cancel")
+    def applyCancel(self, action):
+        self.request.response.redirect(self.context.absolute_url())
+
+
 add_to_list = wrap_form(
         AddToListForm,
         label=_(u"Add to list")
