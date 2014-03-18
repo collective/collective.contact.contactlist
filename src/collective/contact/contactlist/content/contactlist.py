@@ -4,18 +4,9 @@ from five import grok
 
 from plone.dexterity.content import Container
 from plone.dexterity.schema import DexteritySchemaPolicy
-from plone.supermodel import model
 
-from collective.contact.widget import schema
-from collective.contact.contactlist import _
+from collective.contact.contactlist.interfaces import IContactList
 
-
-class IContactList(model.Schema):
-    """Interface for ContactList content type"""
-
-    contacts = schema.ContactList(
-        title=_("Contacts of the list"),
-        )
 
 class ContactList(Container):
     """ContactList content type"""

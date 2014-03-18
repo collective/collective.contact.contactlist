@@ -21,4 +21,7 @@
   <include file="facetednav.zcml"
            zcml:condition="installed collective.contact.facetednav" />
 
+  <include file="excelexport.zcml"
+           zcml:condition="installed collective.excelexport" />
+
 </configure>
