@@ -44,7 +44,7 @@ setup(
         'collective.contact.core',
         'five.grok',
         'plone.api',
-        'plone.formwidget.masterselect'
+        'plone.formwidget.masterselect',
         'setuptools',
     ],
     extras_require={
