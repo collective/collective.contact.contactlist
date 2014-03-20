@@ -34,4 +34,8 @@ class  UserListStorage(grok.MultiAdapter):
     def get_container(self):
         """Get lists container
         """
-        return self.portal.Members[self.user.getId()]
+        user_id = self.user.getId()
+        if not user_id:
+            return None
+
+        return self.portal.Members.get(user_id, None)

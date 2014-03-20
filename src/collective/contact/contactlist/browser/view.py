@@ -10,4 +10,5 @@ class MyListsURL(grok.View):
 
     def render(self):
         adapter = get_user_lists_adapter()
-        return adapter.get_container().absolute_url()
+        container = adapter.get_container()
+        return container and container.absolute_url() or u""
