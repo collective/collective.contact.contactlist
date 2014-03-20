@@ -1,8 +1,8 @@
-from collective.contact.facetednav.browser.batchactions.base import ActionBase
+from collective.contact.facetednav.browser.actions.base import BatchActionBase
 from collective.contact.contactlist import _
 
 
-class AddToListAction(ActionBase):
+class AddToListAction(BatchActionBase):
 
     label = _("Add to list")
     name = 'addtolist'

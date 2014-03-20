@@ -7,7 +7,7 @@
 
   <browser:viewlet
       name="collective.contact.facetednav.batchactions.addtolist"
-      manager="collective.contact.facetednav.browser.batchactions.manager.IBatchActions"
+      manager="collective.contact.facetednav.browser.actions.manager.IBatchActions"
       class="collective.contact.contactlist.browser.facetednav.AddToListAction"
       permission="zope2.DeleteObjects"
       />
