@@ -3,6 +3,7 @@
     xmlns:faceted="http://namespaces.zope.org/faceted"
     i18n_domain="collective.contact.contactlist">
 
+  <include package="eea.facetednavigation" file="meta.zcml" />
   <include package="eea.facetednavigation" />
   <faceted:widget factory=".widget.Widget" />
 
