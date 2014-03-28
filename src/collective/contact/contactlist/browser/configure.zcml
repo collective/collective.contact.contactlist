@@ -18,6 +18,10 @@
     permission="zope2.View"
     />
 
+
+  <include package=".eeawidget"
+           zcml:condition="installed eea.facetednavigation" />
+
   <include file="facetednav.zcml"
            zcml:condition="installed collective.contact.facetednav" />
 

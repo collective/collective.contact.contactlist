@@ -28,8 +28,16 @@ class  UserListStorage(grok.MultiAdapter):
         return [b.getObject() for b in self.get_lists_brains()]
 
     def get_editable_lists(self):
+        """Lists user can edit
+        """
         return [o for o in self.get_lists()
                 if checkPermission('cmf.ModifyPortalContent', o)]
+
+    def get_my_lists(self):
+        """Lists created by user
+        """
+        container = self.get_container()
+        return [o for o in container.values() if IContactList.providedBy(o)]
 
     def get_container(self):
         """Get lists container

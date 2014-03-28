@@ -16,3 +16,6 @@ Integration with collective.contact.facetednav
 If you have collective.contact.facetednav installed,
 if you have enabled contact selection on your faceted navigation
 you can batch select contacts and add them to lists
+
+You have a new widget "contacts list", wich display your lists.
+It filters your results on the contents of the lists you have selected.

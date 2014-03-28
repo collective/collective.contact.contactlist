@@ -17,6 +17,7 @@ class IContactList(model.Schema):
         title=_("Contacts of the list"),
         )
 
+
 class ICollectiveContactContactlistLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
@@ -25,12 +26,20 @@ class IUserLists(Interface):
     """Adapts user, portal and request to get user list location
     """
 
+    def get_lists_brains(self):
+        """Get brains of lists user can use
+        """
+
     def get_lists(self):
         """Get lists user can use
         """
 
-    def get_lists_brains(self):
-        """Get lists user can use
+    def get_editable_lists(self):
+        """Lists user can edit
+        """
+
+    def get_my_lists(self):
+        """Lists created by user
         """
 
     def get_container(self):

@@ -51,3 +51,21 @@ def update_list(contact_list, contacts):
     intids = getUtility(IIntIds)
     contact_list.contacts.extend([RelationValue(intids.getId(obj)) for obj in new_contacts])
     return new_contacts
+
+
+def get_contacts(*contact_lists, **kwargs):
+    """Get the contacts from one or many contact list(s)
+    kwargs can have an 'operator' option ('and' or 'or')
+    so we make union or intersection of lists
+    """
+    operator = kwargs.get('operator', 'or')
+    contacts = set()
+    for contact_list in contact_lists:
+        if operator == 'or':
+            contacts |= set([c.to_object for c in contact_list.contacts
+                             if c.to_object])
+        elif operator == 'and':
+            contacts &= set([c.to_object for c in contact_list.contacts
+                             if c.to_object])
+
+    return list(contacts)
