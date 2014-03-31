@@ -1,13 +1,13 @@
-from zope.interface import Interface
-from five import grok
+from zope.interface import Interface, implements
+from zope.component import adapts
 from plone import api as ploneapi
 from collective.contact.contactlist.interfaces import IUserLists
 from collective.contact.contactlist.content.contactlist import IContactList
 
 
-class  UserListStorage(grok.MultiAdapter):
-    grok.adapts(Interface, Interface, Interface)
-    grok.implements(IUserLists)
+class  UserListStorage(object):
+    adapts(Interface, Interface, Interface)
+    implements(IUserLists)
 
     def __init__(self, user, portal, request):
         self.user = user

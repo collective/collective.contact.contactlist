@@ -9,8 +9,6 @@ from z3c.form import button
 from z3c.form.interfaces import HIDDEN_MODE
 from z3c.form.error import ErrorViewSnippet
 
-from five import grok
-
 from Products.statusmessages.interfaces import IStatusMessage
 from plone import api as ploneapi
 from plone.z3cform.layout import wrap_form
@@ -20,6 +18,7 @@ from collective.contact.widget import schema as contactsschema
 from collective.contact.widget.interfaces import IContactContent
 from collective.contact.contactlist import _, api
 from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
+from Products.Five.browser import BrowserView
 
 
 PMF = MessageFactory('plone')
@@ -73,7 +72,7 @@ class AddToListForm(form.Form):
         return data, errors
 
     def checkNewListTitle(self, data, errors):
-        if data['contact_list'] == CREATE_NEW_KEY and not data['title']:
+        if data['contact_list'] == CREATE_NEW_KEY and not data.get('title', ''):
             message = _("Title of the new list is required")
             errors = self.addError(errors, 'title', message)
 
@@ -128,8 +127,7 @@ add_to_list = wrap_form(
     )
 
 
-class CanAddToList(grok.View):
-    grok.context(Interface)
+class CanAddToList(BrowserView):
 
-    def render(self):
+    def __call__(self):
         return IContactContent.providedBy(self.context)

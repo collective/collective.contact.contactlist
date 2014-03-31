@@ -11,7 +11,7 @@
       name="url_expr">python:portal_url + '/@@contactlist.add-to-list?form.widgets.contacts:list='+'/'.join(object.getPhysicalPath())</property>
    <property name="link_target"></property>
    <property name="icon_expr"></property>
-   <property name="available_expr">context/@@canaddtolist</property>
+   <property name="available_expr">context/@@contactlist.can-add-to-list</property>
    <property name="permissions"/>
    <property name="visible">True</property>
   </object>
@@ -21,10 +21,10 @@
      i18n:domain="collective.contact.contactlist">
    <property name="title" i18n:translate="">My contact lists</property>
    <property name="description" i18n:translate=""></property>
-   <property name="url_expr">context/@@mylistsurl</property>
+   <property name="url_expr">context/@@contactlist.mylists-url</property>
    <property name="link_target"></property>
    <property name="icon_expr"></property>
-   <property name="available_expr">context/@@mylistsurl</property>
+   <property name="available_expr">context/@@contactlist.mylists-url</property>
    <property name="permissions"/>
    <property name="visible">True</property>
   </object>

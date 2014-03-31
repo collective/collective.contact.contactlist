@@ -42,7 +42,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'collective.contact.core',
-        'five.grok',
         'plone.api',
         'plone.formwidget.masterselect',
         'setuptools',

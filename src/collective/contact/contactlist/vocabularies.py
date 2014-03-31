@@ -1,22 +1,19 @@
-from five import grok
+from zope.interface import implements
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
-from grokcore.component.directive import name
+
+from plone import api
 
 from collective.contact.contactlist.api import get_user_lists_adapter
 from collective.contact.contactlist import _
-from plone import api
 
-class ListsVocabulary(grok.GlobalUtility):
+
+class ListsVocabulary(object):
     """All lists user can see.
     Lists shared to user are distinguished with owner's name.
     """
-    grok.name('collective.contact.contactlist.lists')
-    grok.implements(IVocabularyFactory)
-
-    @classmethod
-    def name(self):
-        return name.bind().get(self)
+    implements(IVocabularyFactory)
+    name = 'collective.contact.contactlist.lists'
 
     def _sorted_lists(self, lists):
         user_id = api.user.get_current().getId()
@@ -62,7 +59,7 @@ class ListsVocabulary(grok.GlobalUtility):
 class AllListsVocabulary(ListsVocabulary):
     """All lists user can view, without distinction
     """
-    grok.name('collective.contact.contactlist.alllists')
+    name = 'collective.contact.contactlist.alllists'
 
     def _sorted_lists(self, lists):
         return sorted(lists, key=lambda x: x.Title())
@@ -74,7 +71,7 @@ class AllListsVocabulary(ListsVocabulary):
 class EditableListsVocabulary(ListsVocabulary):
     """All lists user can edit
     """
-    grok.name('collective.contact.contactlist.editablelists')
+    name = 'collective.contact.contactlist.editablelists'
 
     def _get_lists(self):
         editable_lists = get_user_lists_adapter().get_editable_lists()
@@ -85,7 +82,7 @@ class EditableListsVocabulary(ListsVocabulary):
 class MyListsVocabulary(ListsVocabulary):
     """All lists created by user
     """
-    grok.name('collective.contact.contactlist.mylists')
+    name = 'collective.contact.contactlist.mylists'
 
     def _get_lists(self):
         return get_user_lists_adapter().get_my_lists()
@@ -96,7 +93,7 @@ CREATE_NEW_KEY = 'create-new-list'
 class AddToListVocabulary(EditableListsVocabulary):
     """All lists user can edit + list creation option
     """
-    grok.name('collective.contact.contactlist.addtolist')
+    name = 'collective.contact.contactlist.addtolist'
 
     def __call__(self, context):
         lists = self._get_lists()
@@ -107,15 +104,16 @@ class AddToListVocabulary(EditableListsVocabulary):
         return SimpleVocabulary(terms)
 
 
-class ContactListVocabularies(grok.GlobalUtility):
-    grok.name('collective.contact.contactlist.vocabularies')
-    grok.implements(IVocabularyFactory)
-    vocabularies = (ListsVocabulary, MyListsVocabulary, EditableListsVocabulary)
+class ContactListVocabularies(object):
+    name = 'collective.contact.contactlist.vocabularies'
+    implements(IVocabularyFactory)
+    vocabularies = (ListsVocabulary, MyListsVocabulary, EditableListsVocabulary,
+                    AllListsVocabulary)
 
     def __call__(self, context):
         return SimpleVocabulary(
                 [SimpleVocabulary.createTerm(
-                     b.name(),
-                     b.name(),
+                     b.name,
+                     b.name,
                      b.__doc__)
                  for b in self.vocabularies])

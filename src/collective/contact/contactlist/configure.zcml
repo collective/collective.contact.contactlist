@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
-    xmlns:grok="http://namespaces.zope.org/grok"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="collective.contact.contactlist">
@@ -10,14 +9,14 @@
 
     <five:registerPackage package="." initialize=".initialize" />
 	<include package="collective.contact.core" />
-    <include package="five.grok" />
     <include package="plone.api" />
     <include package="plone.formwidget.masterselect" />
 
     <include package=".browser" />
     <include package=".content" />
 
-    <grok:grok package="." />
+    <adapter factory=".adapter.UserListStorage"
+             provides=".interfaces.IUserLists" />
 
     <genericsetup:registerProfile
         name="default"
@@ -33,5 +32,32 @@
         description="Post install import step from collective.contact.contactlist"
         handler=".setuphandlers.post_install">
     </genericsetup:importStep>
+
+
+    <!--  Vocabularies -->
+
+    <utility provides="zope.schema.interfaces.IVocabularyFactory"
+             name="collective.contact.contactlist.lists"
+             factory=".vocabularies.ListsVocabulary" />
+
+    <utility provides="zope.schema.interfaces.IVocabularyFactory"
+             name="collective.contact.contactlist.mylists"
+             factory=".vocabularies.MyListsVocabulary" />
+
+    <utility provides="zope.schema.interfaces.IVocabularyFactory"
+             name="collective.contact.contactlist.editablelists"
+             factory=".vocabularies.EditableListsVocabulary" />
+
+    <utility provides="zope.schema.interfaces.IVocabularyFactory"
+             name="collective.contact.contactlist.addtolist"
+             factory=".vocabularies.AddToListVocabulary" />
+
+    <utility provides="zope.schema.interfaces.IVocabularyFactory"
+             name="collective.contact.contactlist.alllists"
+             factory=".vocabularies.AllListsVocabulary" />
+
+    <utility provides="zope.schema.interfaces.IVocabularyFactory"
+             name="collective.contact.contactlist.vocabularies"
+             factory=".vocabularies.ContactListVocabularies" />
 
 </configure>

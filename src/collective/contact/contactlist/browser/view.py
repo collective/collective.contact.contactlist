@@ -1,14 +1,10 @@
-from zope.interface import Interface
-
-from five import grok
-
 from collective.contact.contactlist.api import get_user_lists_adapter
+from Products.Five.browser import BrowserView
 
 
-class MyListsURL(grok.View):
-    grok.context(Interface)
+class MyListsURL(BrowserView):
 
-    def render(self):
+    def __call__(self):
         adapter = get_user_lists_adapter()
         container = adapter.get_container()
         return container and container.absolute_url() or u""

@@ -11,6 +11,13 @@
       directory="static"
       />
 
+  <browser:view
+    for="*"
+    name="contactlist.mylists-url"
+    class=".view.MyListsURL"
+    permission="zope2.View"
+    />
+
   <browser:page
     for="*"
     name="contactlist.add-to-list"
@@ -18,6 +25,13 @@
     permission="zope2.View"
     />
 
+
+  <browser:page
+    for="*"
+    name="contactlist.can-add-to-list"
+    class=".addtolist.CanAddToList"
+    permission="zope2.View"
+    />
 
   <include package=".eeawidget"
            zcml:condition="installed eea.facetednavigation" />

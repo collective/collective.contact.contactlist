@@ -23,7 +23,7 @@ contactcontactlist.facetednav_addtolist = function(){
         closeselector: '[name="form.buttons.cancel"]',
         noform: function(el, pbo){
             var messages = jQuery(el).find('.portalMessage');
-            jQuery('#contacts-facetednav-batchactions').prepend(messages);
+            Faceted.Form.do_form_query();
             return 'close';
             }
     }).click();
