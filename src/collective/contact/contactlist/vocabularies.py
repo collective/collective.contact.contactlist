@@ -3,10 +3,9 @@ from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 from grokcore.component.directive import name
 
-from plone.uuid.interfaces import IUUID
-
 from collective.contact.contactlist.api import get_user_lists_adapter
 from collective.contact.contactlist import _
+from plone import api
 
 class ListsVocabulary(grok.GlobalUtility):
     """All lists user can see
@@ -18,17 +17,45 @@ class ListsVocabulary(grok.GlobalUtility):
     def name(self):
         return name.bind().get(self)
 
-    def _get_terms(self):
-        return [SimpleVocabulary.createTerm(
-                     b.UID,
-                     b.UID,
-                     b.Title)
-                 for b in get_user_lists_adapter().get_lists_brains()]
+    def _sorted_lists(self, lists):
+        user_id = api.user.get_current().getId()
+        def sort_lists(list1, list2):
+            if list1.Creator() == list2.Creator():
+                return cmp(list1.Title(), list2.Title())
+            elif list1.Creator() == user_id:
+                return -1
+            elif list2.Creator() == user_id:
+                return 1
 
+            return sorted(lists, cmp=sort_lists)
+
+        return sorted(lists, cmp=sort_lists)
+
+    def _get_terms(self, contact_lists):
+        return [SimpleVocabulary.createTerm(
+                     b.UID(),
+                     b.UID(),
+                     self.render_list(b))
+                 for b in contact_lists]
+
+    def render_list(self, contact_list):
+        creator = contact_list.Creator()
+        if creator == api.user.get_current().getId():
+            return contact_list.Title()
+        else:
+            user = api.user.get(creator)
+            fullname = user and user.getProperty('fullname', '') or creator
+            return "%s (%s)" % (contact_list.Title(),
+                                fullname)
+
+    def _get_lists(self):
+        lists = get_user_lists_adapter().get_lists()
+        lists = self._sorted_lists(lists)
+        return lists
 
     def __call__(self, context):
-        terms = self._get_terms()
-        return SimpleVocabulary(terms)
+        lists = self._get_lists()
+        return SimpleVocabulary(self._get_terms(lists))
 
 
 class EditableListsVocabulary(ListsVocabulary):
@@ -36,12 +63,10 @@ class EditableListsVocabulary(ListsVocabulary):
     """
     grok.name('collective.contact.contactlist.editablelists')
 
-    def _get_terms(self):
-        return [SimpleVocabulary.createTerm(
-                     IUUID(b),
-                     IUUID(b),
-                     b.Title())
-                 for b in get_user_lists_adapter().get_editable_lists()]
+    def _get_lists(self):
+        editable_lists = get_user_lists_adapter().get_editable_lists()
+        editable_lists = self._sorted_lists(editable_lists)
+        return editable_lists
 
 
 class MyListsVocabulary(ListsVocabulary):
@@ -49,12 +74,8 @@ class MyListsVocabulary(ListsVocabulary):
     """
     grok.name('collective.contact.contactlist.mylists')
 
-    def _get_terms(self):
-        return [SimpleVocabulary.createTerm(
-                     IUUID(b),
-                     IUUID(b),
-                     b.Title())
-                 for b in get_user_lists_adapter().get_my_lists()]
+    def _get_lists(self):
+        return get_user_lists_adapter().get_my_lists()
 
 
 CREATE_NEW_KEY = 'create-new-list'
@@ -65,7 +86,8 @@ class AddToListVocabulary(EditableListsVocabulary):
     grok.name('collective.contact.contactlist.addtolist')
 
     def __call__(self, context):
-        terms = self._get_terms()
+        lists = self._get_lists()
+        terms = self._get_terms(lists)
         terms.append(SimpleVocabulary.createTerm(CREATE_NEW_KEY,
                                                  CREATE_NEW_KEY,
                                                  _(u"Create a new list")))

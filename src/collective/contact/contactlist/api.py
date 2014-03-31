@@ -27,6 +27,9 @@ def create_list(title, description, contacts, list_type='contact_list'):
     @return: the contact list content object
     """
     container = get_user_lists_adapter().get_container()
+    if not container:
+        raise ValueError("User has no list container : %s",
+                         ploneapi.user.get_current().getId())
     contact_list = ploneapi.content.create(container=container,
                                            type=list_type, title=title,
                                            description=description)
@@ -49,7 +52,8 @@ def update_list(contact_list, contacts):
             new_contacts.append(contact)
 
     intids = getUtility(IIntIds)
-    contact_list.contacts.extend([RelationValue(intids.getId(obj)) for obj in new_contacts])
+    contact_list.contacts.extend([RelationValue(intids.getId(obj))
+                                  for obj in new_contacts])
     return new_contacts
 
 

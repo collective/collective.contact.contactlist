@@ -1,9 +1,8 @@
 from zope.interface import Interface
 from five import grok
-from collective.contact.contactlist.interfaces import IUserLists
 from plone import api as ploneapi
+from collective.contact.contactlist.interfaces import IUserLists
 from collective.contact.contactlist.content.contactlist import IContactList
-from zope.security.management import checkPermission
 
 
 class  UserListStorage(grok.MultiAdapter):
@@ -30,8 +29,9 @@ class  UserListStorage(grok.MultiAdapter):
     def get_editable_lists(self):
         """Lists user can edit
         """
+        mtool = ploneapi.portal.get_tool('portal_membership')
         return [o for o in self.get_lists()
-                if checkPermission('cmf.ModifyPortalContent', o)]
+                if mtool.checkPermission('Modify portal content', o)]
 
     def get_my_lists(self):
         """Lists created by user
