@@ -8,7 +8,8 @@ from collective.contact.contactlist import _
 from plone import api
 
 class ListsVocabulary(grok.GlobalUtility):
-    """All lists user can see
+    """All lists user can see.
+    Lists shared to user are distinguished with owner's name.
     """
     grok.name('collective.contact.contactlist.lists')
     grok.implements(IVocabularyFactory)
@@ -56,6 +57,18 @@ class ListsVocabulary(grok.GlobalUtility):
     def __call__(self, context):
         lists = self._get_lists()
         return SimpleVocabulary(self._get_terms(lists))
+
+
+class AllListsVocabulary(ListsVocabulary):
+    """All lists user can view, without distinction
+    """
+    grok.name('collective.contact.contactlist.alllists')
+
+    def _sorted_lists(self, lists):
+        return sorted(lists, key=lambda x: x.Title())
+
+    def render_list(self, contact_list):
+        return contact_list.Title()
 
 
 class EditableListsVocabulary(ListsVocabulary):
