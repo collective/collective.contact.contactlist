@@ -23,17 +23,19 @@ contactcontactlist.init = function(){
      });
 };
 
+/* Faceted navigation integration */
+
 contactcontactlist.facetednav_addtolist = function(){
     var url = portal_url + '/@@contactlist.add-to-list';
-    contactcontactlist._open_overlay(url);
+    contactcontactlist._facetednav_open_overlay(url);
 };
 
 contactcontactlist.facetednav_replacelist = function(){
     var url = portal_url + '/@@contactlist.replace-list';
-    contactcontactlist._open_overlay(url);
+    contactcontactlist._facetednav_open_overlay(url);
 };
 
-contactcontactlist._open_overlay = function(url){
+contactcontactlist._facetednav_open_overlay = function(url){
     jQuery("<a href='" + url + "'>Edit</a>'").prepOverlay({
         subtype:'ajax',
         filter: common_content_filter,
@@ -42,8 +44,13 @@ contactcontactlist._open_overlay = function(url){
         noform: function(el, pbo){
             contactfacetednav.store_overlay_messages(el);
             Faceted.Form.do_form_query();
+            jQuery('.faceted-contactlist-widget').each(function(){
+                var widget = jQuery(this);
+                var sortcountable = widget.hasClass('faceted-sortcountable');
+                Faceted.Widgets[this.id.split('_')[0]].count(sortcountable);
+            });
             return 'close';
-            }
+        }
     }).click();
 };
 
