@@ -4,7 +4,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 
 from plone import api
 
-from collective.contact.contactlist.api import get_user_lists_adapter
+from collective.contact.contactlist.api import get_tool
 from collective.contact.contactlist import _
 
 
@@ -47,7 +47,7 @@ class ListsVocabulary(object):
                                 fullname)
 
     def _get_lists(self):
-        lists = get_user_lists_adapter().get_lists()
+        lists = get_tool().get_lists()
         lists = self._sorted_lists(lists)
         return lists
 
@@ -74,7 +74,7 @@ class EditableListsVocabulary(ListsVocabulary):
     name = 'collective.contact.contactlist.editablelists'
 
     def _get_lists(self):
-        editable_lists = get_user_lists_adapter().get_editable_lists()
+        editable_lists = get_tool().get_editable_lists()
         editable_lists = self._sorted_lists(editable_lists)
         return editable_lists
 
@@ -85,7 +85,7 @@ class MyListsVocabulary(ListsVocabulary):
     name = 'collective.contact.contactlist.mylists'
 
     def _get_lists(self):
-        return get_user_lists_adapter().get_my_lists()
+        return get_tool().get_my_lists()
 
 
 CREATE_NEW_KEY = 'create-new-list'

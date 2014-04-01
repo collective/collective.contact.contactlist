@@ -10,33 +10,51 @@ contactcontactlist.init = function(){
     });
     jQuery(document).bind('loadInsideOverlay', function(e, el, responseText, errorText, api) {
         var overlay = $(el).closest('.overlay-ajax');
-        jQuery(overlay).find('#formfield-form-widgets-contacts').each(contactcontactlist.populate_hidden_field)
+        var form = jQuery(overlay).find('#form');
+        jQuery(overlay).find('#formfield-form-widgets-contacts').each(contactcontactlist.populate_hidden_field);
+
+        // in replace list overlay, select checked list in eea contact list
+        if(form.hasClass("kssattr-formname-contactlist.replace-list")){
+            jQuery('.faceted-contactlist-widget input:checked').first().each(function(){
+                var list_uid = jQuery(this).val();
+                form.find('#form-widgets-contact_list').val(list_uid);
+            });
+        }
      });
 };
 
 contactcontactlist.facetednav_addtolist = function(){
-    var url = portal_url + '/@@contactlist.add-to-list'
-    jQuery("<a href='" + url + "'>Add to list</a>'").prepOverlay({
+    var url = portal_url + '/@@contactlist.add-to-list';
+    contactcontactlist._open_overlay(url);
+};
+
+contactcontactlist.facetednav_replacelist = function(){
+    var url = portal_url + '/@@contactlist.replace-list';
+    contactcontactlist._open_overlay(url);
+};
+
+contactcontactlist._open_overlay = function(url){
+    jQuery("<a href='" + url + "'>Edit</a>'").prepOverlay({
         subtype:'ajax',
         filter: common_content_filter,
         formselector: '#form',
         closeselector: '[name="form.buttons.cancel"]',
         noform: function(el, pbo){
-            var messages = jQuery(el).find('.portalMessage');
+            contactfacetednav.store_overlay_messages(el);
             Faceted.Form.do_form_query();
             return 'close';
             }
     }).click();
-}
+};
 
 contactcontactlist.populate_hidden_field = function(field){
     var pathes = contactfacetednav.contacts.selection_pathes();
-    var field = jQuery('#formfield-form-widgets-contacts')
+    var elt = jQuery('#formfield-form-widgets-contacts');
     for(var num in pathes){
         var path = pathes[num];
         var input = jQuery('<input type="hidden" value="' + path + '" class="hidden-widget" name="form.widgets.contacts:list" originalvalue="' + path +'"/>');
-        field.append(input);
+        elt.append(input);
     }
-}
+};
 
 jQuery(document).ready(contactcontactlist.init);

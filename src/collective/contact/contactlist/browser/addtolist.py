@@ -10,6 +10,7 @@ from z3c.form.interfaces import HIDDEN_MODE
 from z3c.form.error import ErrorViewSnippet
 
 from Products.statusmessages.interfaces import IStatusMessage
+from Products.Five.browser import BrowserView
 from plone import api as ploneapi
 from plone.z3cform.layout import wrap_form
 from plone.formwidget.masterselect import MasterSelectField
@@ -18,7 +19,6 @@ from collective.contact.widget import schema as contactsschema
 from collective.contact.widget.interfaces import IContactContent
 from collective.contact.contactlist import _, api
 from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
-from Products.Five.browser import BrowserView
 
 
 PMF = MessageFactory('plone')
@@ -55,6 +55,7 @@ class IAddToList(Interface):
 
     contacts = contactsschema.ContactList()
 
+
 class AddToListForm(form.Form):
 
     fields = field.Fields(IAddToList)
@@ -64,7 +65,8 @@ class AddToListForm(form.Form):
 
     def updateWidgets(self):
         super(AddToListForm, self).updateWidgets()
-        self.widgets['contacts'].mode = HIDDEN_MODE
+        if 'ajax_load' in self.request:
+            self.widgets['contacts'].mode = HIDDEN_MODE
 
     def extractData(self, setErrors=True):
         data, errors = super(AddToListForm, self).extractData(setErrors=setErrors)
@@ -123,7 +125,8 @@ class AddToListForm(form.Form):
 
 add_to_list = wrap_form(
         AddToListForm,
-        label=_(u"Add to list")
+        label=_(u"Add to list"),
+        description=_(u"Add selected contacts to selected list"),
     )
 
 

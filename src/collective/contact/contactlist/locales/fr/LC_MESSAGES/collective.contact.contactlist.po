@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-03-20 09:43+0000\n"
+"POT-Creation-Date: 2014-04-01 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,12 +14,16 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
+#: ../browser/addtolist.py:129
+msgid "Add selected contacts to selected list"
+msgstr "Ajoutez les contacts sélectionnés à la liste indiquée"
+
 #: ../profiles/default/actions.xml
 msgid "Add the contact to a contact list"
 msgstr "Ajouter le contact à une liste de contacts"
 
-#: ../browser/addtolist.py:127
-#: ../browser/facetednav.py:7
+#: ../browser/addtolist.py:128
+#: ../browser/facetednav.py:8
 #: ../profiles/default/actions.xml
 msgid "Add to list"
 msgstr "Ajouter à une liste"
@@ -28,11 +32,15 @@ msgstr "Ajouter à une liste"
 msgid "Contact list"
 msgstr "Liste de contacts"
 
+#: ../browser/eeawidget/widget.py:31
+msgid "Contact lists"
+msgstr "Listes de contacts"
+
 #: ../interfaces.py:17
 msgid "Contacts of the list"
 msgstr "Contacts de la liste"
 
-#: ../vocabularies.py:46
+#: ../vocabularies.py:103
 msgid "Create a new list"
 msgstr "Créer une nouvelle liste"
 
@@ -40,11 +48,15 @@ msgstr "Créer une nouvelle liste"
 msgid "Excel export list of contacts"
 msgstr "Exporter en excel la liste de contacts"
 
-#: ../browser/addtolist.py:53
+#: ../browser/addtolist.py:52
 msgid "List title"
 msgstr "Nom de la liste"
 
-#: ../browser/addtolist.py:31
+#: ../browser/replacelist.py:24
+msgid "List to update"
+msgstr "Liste à mettre à jour"
+
+#: ../browser/addtolist.py:30
 msgid "List where to add selected item(s)"
 msgstr "Liste où les éléments sélectionnés seront ajoutés"
 
@@ -52,17 +64,35 @@ msgstr "Liste où les éléments sélectionnés seront ajoutés"
 msgid "My contact lists"
 msgstr "Mes listes de contacts"
 
-#: ../browser/addtolist.py:77
+#: ../browser/facetednav.py:19
+msgid "Replace list"
+msgstr "Mettre à jour la liste"
+
+#: ../browser/replacelist.py:68
+msgid "Replace list contacts"
+msgstr "Changer les contacts de la liste"
+
+#: ../browser/addtolist.py:78
 msgid "Title of the new list is required"
 msgstr "Le nom de la nouvelle liste est requis"
 
+#. Default: "Replace contacts of selected list with selected contacts"
+#: ../browser/replacelist.py:69
+msgid "help_replace_list"
+msgstr "Remplacez les contacts de la liste indiquée par les contacts sélectionnés"
+
+#. Default: "${title} list contacts has been replaced by ${num} contact(s)"
+#: ../browser/replacelist.py:53
+msgid "msg_list_replaced"
+msgstr "Les contacts de la liste ${title} ont été remplacés par ${num} contact(s)"
+
 #. Default: "${title} list updated with ${num} contact(s)"
-#: ../browser/addtolist.py:101
+#: ../browser/addtolist.py:102
 msgid "msg_list_updated"
 msgstr "La liste ${title} a été mise à jour avec ${num} contact(s)"
 
 #. Default: "New list added with ${num} contact(s) : ${title}"
-#: ../browser/addtolist.py:93
+#: ../browser/addtolist.py:94
 msgid "msg_new_list_added"
 msgstr "La liste ${title} a été créée avec ${num} contact(s)"
 

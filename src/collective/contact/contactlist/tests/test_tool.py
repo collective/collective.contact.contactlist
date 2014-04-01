@@ -11,7 +11,7 @@ from plone.app.testing import TEST_USER_ID
 from collective.contact.contactlist.api import create_list, update_list,\
     get_contacts
 from collective.contact.contactlist.testing import IntegrationTestCase
-from collective.contact.contactlist.api import get_user_lists_adapter
+from collective.contact.contactlist.api import get_tool
 from collective.contact.contactlist.vocabularies import MyListsVocabulary,\
     ListsVocabulary, CREATE_NEW_KEY
 
@@ -68,7 +68,7 @@ class TestInstall(IntegrationTestCase):
                     directory.armeedeterre.corpsb]
         list_2 = create_list("Divisions", "Description of my list", contacts)
 
-        adapter = get_user_lists_adapter()
+        adapter = get_tool()
         self.assertEqual(adapter.get_lists(), [list_1, list_2])
 
         self.assertEqual(adapter.get_my_lists(), [list_2])
@@ -113,17 +113,25 @@ class TestInstall(IntegrationTestCase):
         addview.request['form.widgets.description'] = u"My new list"
         addview.request['form.widgets.contacts'] = ['/plone/mydirectory/armeedeterre/corpsa']
         addview.update()
-        addview.form_instance.applySave(addview.form_instance, addview.form)
+        addview.form_instance.applySave(addview.form_instance, None)
         self.assertIn('my-new-list', portal.Members.testuser)
         new_list = portal.Members.testuser['my-new-list']
         self.assertEqual(get_contacts(new_list),
                          [portal.mydirectory.armeedeterre.corpsa])
 
-
         addview.request['form.widgets.contact_list'] = new_list.UID()
         addview.request['form.widgets.contacts'] = ['/plone/mydirectory/armeedeterre/corpsb']
         addview.update()
-        addview.form_instance.applySave(addview.form_instance, addview.form)
-        self.assertEqual(get_contacts(new_list),
-                         [portal.mydirectory.armeedeterre.corpsa,
-                          portal.mydirectory.armeedeterre.corpsb])
+        addview.form_instance.applySave(addview.form_instance, None)
+        self.assertEqual(set(get_contacts(new_list)),
+                         set([portal.mydirectory.armeedeterre.corpsa,
+                              portal.mydirectory.armeedeterre.corpsb]))
+
+
+        replaceview = portal.restrictedTraverse('@@contactlist.replace-list')
+        replaceview.request['form.widgets.contact_list'] = new_list.UID()
+        replaceview.request['form.widgets.contacts'] = ['/plone/mydirectory/armeedeterre/corpsb']
+        replaceview.update()
+        replaceview.form_instance.applySave(replaceview.form_instance, None)
+        self.assertEqual(set(get_contacts(new_list)),
+                         set([portal.mydirectory.armeedeterre.corpsb]))

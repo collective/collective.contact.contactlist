@@ -29,6 +29,7 @@ class Widget(CheckboxWidget):
     # Widget properties
     widget_type = 'contactlist'
     widget_label = _('Contact lists')
+    css_class = 'faceted-checkboxes-widget faceted-contactlist-widget'
 
     edit_schema = EditSchema
 

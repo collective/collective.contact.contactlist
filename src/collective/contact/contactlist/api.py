@@ -1,3 +1,4 @@
+from AccessControl.unauthorized import Unauthorized
 from zope.component import getMultiAdapter, getUtility
 from zope.intid.interfaces import IIntIds
 
@@ -8,7 +9,7 @@ from plone import api as ploneapi
 from collective.contact.contactlist.interfaces import IUserLists
 
 
-def get_user_lists_adapter():
+def get_tool():
     """Get list storage of current user
     """
     user = ploneapi.user.get_current()
@@ -26,7 +27,7 @@ def create_list(title, description, contacts, list_type='contact_list'):
     @param list_type: str - The portal type of contact_list to create
     @return: the contact list content object
     """
-    container = get_user_lists_adapter().get_container()
+    container = get_tool().get_container()
     if not container:
         raise ValueError("User has no list container : %s",
                          ploneapi.user.get_current().getId())
@@ -45,6 +46,10 @@ def update_list(contact_list, contacts):
     @param contacts: objects - A list of contact objects
     @return: objects - the list of contacts that have been actually added
     """
+    mtool = ploneapi.portal.get_tool('portal_membership')
+    if not mtool.checkPermission('cmf.ModifyPortalContent', contact_list):
+        raise Unauthorized("You can't edit this contact list")
+
     current_contacts = [c.to_object for c in contact_list.contacts]
     new_contacts = []
     for contact in contacts:
@@ -55,6 +60,22 @@ def update_list(contact_list, contacts):
     contact_list.contacts.extend([RelationValue(intids.getId(obj))
                                   for obj in new_contacts])
     return new_contacts
+
+
+def replace_list(contact_list, contacts):
+    """Replace the contacts of a contact list
+    @param contact_list: object - The contact list object
+    @param contacts: objects - A list of contact objects
+    @return: objects - the list of contacts that have been actually added
+    """
+    mtool = ploneapi.portal.get_tool('portal_membership')
+    if not mtool.checkPermission('cmf.ModifyPortalContent', contact_list):
+        raise Unauthorized("You can't edit this contact list")
+
+    intids = getUtility(IIntIds)
+    contact_list.contacts = [RelationValue(intids.getId(obj))
+                                  for obj in contacts]
+    return contacts
 
 
 def get_contacts(*contact_lists, **kwargs):

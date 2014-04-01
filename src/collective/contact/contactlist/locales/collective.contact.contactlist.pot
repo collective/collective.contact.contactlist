@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-03-20 09:43+0000\n"
+"POT-Creation-Date: 2014-04-01 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,16 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: collective.contact.contactlist\n"
 
+#: ../browser/addtolist.py:129
+msgid "Add selected contacts to selected list"
+msgstr ""
+
 #: ../profiles/default/actions.xml
 msgid "Add the contact to a contact list"
 msgstr ""
 
-#: ../browser/addtolist.py:127
-#: ../browser/facetednav.py:7
+#: ../browser/addtolist.py:128
+#: ../browser/facetednav.py:8
 #: ../profiles/default/actions.xml
 msgid "Add to list"
 msgstr ""
@@ -31,11 +35,15 @@ msgstr ""
 msgid "Contact list"
 msgstr ""
 
+#: ../browser/eeawidget/widget.py:31
+msgid "Contact lists"
+msgstr ""
+
 #: ../interfaces.py:17
 msgid "Contacts of the list"
 msgstr ""
 
-#: ../vocabularies.py:46
+#: ../vocabularies.py:103
 msgid "Create a new list"
 msgstr ""
 
@@ -43,11 +51,15 @@ msgstr ""
 msgid "Excel export list of contacts"
 msgstr ""
 
-#: ../browser/addtolist.py:53
+#: ../browser/addtolist.py:52
 msgid "List title"
 msgstr ""
 
-#: ../browser/addtolist.py:31
+#: ../browser/replacelist.py:24
+msgid "List to update"
+msgstr ""
+
+#: ../browser/addtolist.py:30
 msgid "List where to add selected item(s)"
 msgstr ""
 
@@ -55,17 +67,35 @@ msgstr ""
 msgid "My contact lists"
 msgstr ""
 
-#: ../browser/addtolist.py:77
+#: ../browser/facetednav.py:19
+msgid "Replace list"
+msgstr ""
+
+#: ../browser/replacelist.py:68
+msgid "Replace list contacts"
+msgstr ""
+
+#: ../browser/addtolist.py:78
 msgid "Title of the new list is required"
 msgstr ""
 
+#. Default: "Replace contacts of selected list with selected contacts"
+#: ../browser/replacelist.py:69
+msgid "help_replace_list"
+msgstr ""
+
+#. Default: "${title} list contacts has been replaced by ${num} contact(s)"
+#: ../browser/replacelist.py:53
+msgid "msg_list_replaced"
+msgstr ""
+
 #. Default: "${title} list updated with ${num} contact(s)"
-#: ../browser/addtolist.py:101
+#: ../browser/addtolist.py:102
 msgid "msg_list_updated"
 msgstr ""
 
 #. Default: "New list added with ${num} contact(s) : ${title}"
-#: ../browser/addtolist.py:93
+#: ../browser/addtolist.py:94
 msgid "msg_new_list_added"
 msgstr ""
 
