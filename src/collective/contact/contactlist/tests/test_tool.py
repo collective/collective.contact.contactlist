@@ -101,13 +101,14 @@ class TestInstall(IntegrationTestCase):
         self.assertEqual(lists_vocabulary._terms[0].title, "Divisions")
         self.assertEqual(lists_vocabulary._terms[1].title, "Corpses (%s)" % TEST_USER_ID)
 
-    def test_addview(self):
+    def test_views(self):
         portal = self.portal
         login(portal, 'testuser')
         self.assertFalse(portal.restrictedTraverse('@@contactlist.can-add-to-list')())
         self.assertTrue(portal.mydirectory.armeedeterre.restrictedTraverse('@@contactlist.can-add-to-list')())
 
         addview = portal.restrictedTraverse('@@contactlist.add-to-list')
+        addview.request['REQUEST_METHOD'] = 'POST'
         addview.request['form.widgets.contact_list'] = CREATE_NEW_KEY
         addview.request['form.widgets.title'] = u"My new list"
         addview.request['form.widgets.description'] = u"My new list"
@@ -135,3 +136,8 @@ class TestInstall(IntegrationTestCase):
         replaceview.form_instance.applySave(replaceview.form_instance, None)
         self.assertEqual(set(get_contacts(new_list)),
                          set([portal.mydirectory.armeedeterre.corpsb]))
+
+        removeview = new_list.restrictedTraverse('@@contactlist.remove-from-list')
+        removeview.request['uids'] = [portal.mydirectory.armeedeterre.corpsb.UID()]
+        removeview()
+        self.assertEqual(get_contacts(new_list), [])

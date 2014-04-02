@@ -13,6 +13,7 @@ from Products.statusmessages.interfaces import IStatusMessage
 from Products.Five.browser import BrowserView
 from plone import api as ploneapi
 from plone.z3cform.layout import wrap_form
+from plone.protect import PostOnly
 from plone.formwidget.masterselect import MasterSelectField
 
 from collective.contact.widget import schema as contactsschema
@@ -82,6 +83,7 @@ class AddToListForm(form.Form):
 
     @button.buttonAndHandler(PMF('Save'), name="save")
     def applySave(self, action):
+        PostOnly(self.request)
         data, errors = self.extractData()
         if errors:
             return
@@ -89,7 +91,7 @@ class AddToListForm(form.Form):
         contacts = data['contacts']
         if data['contact_list'] == CREATE_NEW_KEY:
             title, description = data['title'], data['description']
-            contact_list = api.create_list(title, description, contacts)
+            contact_list = api.create_list(title, description or u"", contacts)
             IStatusMessage(self.request).add(
                                _('msg_new_list_added',
                                  default=u"New list added with ${num} contact(s) : ${title}",

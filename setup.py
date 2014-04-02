@@ -43,6 +43,7 @@ setup(
     install_requires=[
         'collective.contact.core',
         'plone.api',
+        'plone.protect',
         'plone.formwidget.masterselect',
         'setuptools',
     ],
