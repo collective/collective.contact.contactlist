@@ -39,6 +39,14 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    for="*"
+    name="contactlist.remove-from-list"
+    class=".removefromlist.RemoveFromList"
+    permission="zope2.View"
+    />
+
+
   <include package=".eeawidget"
            zcml:condition="installed eea.facetednavigation" />
 

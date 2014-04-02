@@ -9,6 +9,7 @@ from z3c.form.interfaces import HIDDEN_MODE
 
 from Products.statusmessages.interfaces import IStatusMessage
 from plone import api as ploneapi
+from plone.protect import PostOnly
 from plone.z3cform.layout import wrap_form
 
 from collective.contact.widget import schema as contactsschema
@@ -42,6 +43,7 @@ class ReplaceListForm(form.Form):
 
     @button.buttonAndHandler(PMF('Save'), name="save")
     def applySave(self, action):
+        PostOnly(self.request)
         data, errors = self.extractData()
         if errors:
             return
