@@ -11,8 +11,10 @@ contactcontactlist.init = function(){
     jQuery(document).bind('loadInsideOverlay', function(e, el, responseText, errorText, api) {
         var overlay = $(el).closest('.overlay-ajax');
         var form = jQuery(overlay).find('#form');
-        jQuery(overlay).find('#formfield-form-widgets-contacts').each(contactcontactlist.populate_hidden_field);
-
+        jQuery('#contacts-facetednav-batchactions').each(function(){
+            var pathes = contactfacetednav.contacts.selection_pathes();
+            jQuery(overlay).find('#formfield-form-widgets-contacts').each(contactcontactlist.populate_hidden_field);
+        });
         // in replace list overlay, select checked list in eea contact list
         if(form.hasClass("kssattr-formname-contactlist.replace-list")){
             jQuery('.faceted-contactlist-widget input:checked').first().each(function(){
@@ -54,8 +56,7 @@ contactcontactlist._facetednav_open_overlay = function(url){
     }).click();
 };
 
-contactcontactlist.populate_hidden_field = function(field){
-    var pathes = contactfacetednav.contacts.selection_pathes();
+contactcontactlist.populate_hidden_field = function(field, pathes){
     var elt = jQuery('#formfield-form-widgets-contacts');
     for(var num in pathes){
         var path = pathes[num];
