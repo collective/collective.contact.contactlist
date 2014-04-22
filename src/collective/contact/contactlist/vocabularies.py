@@ -25,7 +25,7 @@ class ListsVocabulary(object):
             elif list2.Creator() == user_id:
                 return 1
 
-            return sorted(lists, cmp=sort_lists)
+            return cmp(list1, list2)
 
         return sorted(lists, cmp=sort_lists)
 
