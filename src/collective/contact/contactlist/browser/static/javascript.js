@@ -13,7 +13,9 @@ contactcontactlist.init = function(){
         var form = jQuery(overlay).find('#form');
         jQuery('#contacts-facetednav-batchactions').each(function(){
             var pathes = contactfacetednav.contacts.selection_pathes();
-            jQuery(overlay).find('#formfield-form-widgets-contacts').each(contactcontactlist.populate_hidden_field);
+            jQuery(overlay).find('#formfield-form-widgets-contacts').each(function() {
+                contactcontactlist.populate_hidden_field(this, pathes);
+            });
         });
         // in replace list overlay, select checked list in eea contact list
         if(form.hasClass("kssattr-formname-contactlist.replace-list")){
