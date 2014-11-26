@@ -5,7 +5,8 @@ Changelog
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Put 'Create a new list' on top of the select widget.
+  [cedricmessiant]
 
 
 1.0 (2014-06-16)

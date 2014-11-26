@@ -96,11 +96,11 @@ class AddToListVocabulary(EditableListsVocabulary):
     name = 'collective.contact.contactlist.addtolist'
 
     def __call__(self, context):
+        terms = [SimpleVocabulary.createTerm(CREATE_NEW_KEY,
+                                             CREATE_NEW_KEY,
+                                             _(u"Create a new list"))]
         lists = self._get_lists()
-        terms = self._get_terms(lists)
-        terms.append(SimpleVocabulary.createTerm(CREATE_NEW_KEY,
-                                                 CREATE_NEW_KEY,
-                                                 _(u"Create a new list")))
+        terms.extend(self._get_terms(lists))
         return SimpleVocabulary(terms)
 
 
