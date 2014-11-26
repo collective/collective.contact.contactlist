@@ -5,6 +5,9 @@ Changelog
 1.1 (unreleased)
 ----------------
 
+- Fix relations.
+  [cedricmessiant]
+
 - Put 'Create a new list' on top of the select widget.
   [cedricmessiant]
 

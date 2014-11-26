@@ -1,6 +1,7 @@
 from AccessControl.unauthorized import Unauthorized
 from zope.component import getMultiAdapter, getUtility
 from zope.intid.interfaces import IIntIds
+from zope.lifecycleevent import modified
 
 from z3c.relationfield.relation import RelationValue
 
@@ -37,6 +38,7 @@ def create_list(title, description, contacts, list_type='contact_list'):
     intids = getUtility(IIntIds)
     contact_list.contacts = [RelationValue(intids.getId(obj))
                              for obj in contacts]
+    modified(contact_list)
     return contact_list
 
 
@@ -59,6 +61,7 @@ def update_list(contact_list, contacts):
     intids = getUtility(IIntIds)
     contact_list.contacts.extend([RelationValue(intids.getId(obj))
                                   for obj in new_contacts])
+    modified(contact_list)
     return new_contacts
 
 
@@ -75,6 +78,7 @@ def replace_list(contact_list, contacts):
     intids = getUtility(IIntIds)
     contact_list.contacts = [RelationValue(intids.getId(obj))
                                   for obj in contacts]
+    modified(contact_list)
     return contacts
 
 
