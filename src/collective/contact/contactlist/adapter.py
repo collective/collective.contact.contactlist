@@ -9,7 +9,7 @@ from plone import api as ploneapi
 from collective.contact.contactlist.interfaces import IUserLists, IContactList
 
 
-class  UserListStorage(object):
+class UserListStorage(object):
     adapts(Interface, Interface, Interface)
     implements(IUserLists)
 
