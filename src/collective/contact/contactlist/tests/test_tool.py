@@ -69,11 +69,13 @@ class TestInstall(IntegrationTestCase):
         list_2 = create_list("Divisions", "Description of my list", contacts)
 
         adapter = get_tool()
-        self.assertEqual(adapter.get_lists(), [list_1, list_2])
+        # the sort order is undefined
+        self.assertEqual(sorted(adapter.get_lists()), sorted([list_1, list_2]))
 
         self.assertEqual(adapter.get_my_lists(), [list_2])
 
-        self.assertEqual(adapter.get_editable_lists(), [list_1, list_2])
+        self.assertEqual(sorted(adapter.get_editable_lists()),
+                sorted([list_1, list_2]))
 
         url = self.portal.unrestrictedTraverse('@@contactlist.mylists-url')()
         self.assertEqual(url, "http://nohost/plone/Members/testuser")
