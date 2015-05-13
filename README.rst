@@ -2,6 +2,8 @@
 collective.contact.contactlist
 ==========================================================================
 
+This add-on is part of the ``collective.contact.*`` suite. For an overview and a demo of these suite, see `collective.contact.demo <https://github.com/collective/collective.contact.demo>`__.
+
 Users can can manage lists of contacts.
 Adds an action to add a content to an existing or a new list.
 
