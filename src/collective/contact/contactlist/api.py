@@ -90,6 +90,8 @@ def get_contacts(*contact_lists, **kwargs):
     operator = kwargs.get('operator', 'or')
     contacts = set()
     for contact_list in contact_lists:
+        if not contact_list.contacts:
+            continue
         if operator == 'or':
             contacts |= set([c.to_object for c in contact_list.contacts
                              if c.to_object])
