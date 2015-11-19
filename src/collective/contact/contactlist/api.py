@@ -52,6 +52,8 @@ def update_list(contact_list, contacts):
     if not mtool.checkPermission('cmf.ModifyPortalContent', contact_list):
         raise Unauthorized("You can't edit this contact list")
 
+    if not contact_list.contacts:
+        contact_list.contacts = []
     current_contacts = [c.to_object for c in contact_list.contacts]
     new_contacts = []
     for contact in contacts:

@@ -14,6 +14,8 @@ Changelog
 - Put 'Create a new list' on top of the select widget.
   [cedricmessiant]
 
+- Fix update_list API for empty list
+  [ebrehault]
 
 1.0 (2014-06-16)
 ----------------
