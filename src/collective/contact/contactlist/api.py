@@ -49,7 +49,8 @@ def update_list(contact_list, contacts):
     @return: objects - the list of contacts that have been actually added
     """
     mtool = ploneapi.portal.get_tool('portal_membership')
-    if not mtool.checkPermission('cmf.ModifyPortalContent', contact_list):
+    if not(mtool.checkPermission('cmf.ModifyPortalContent', contact_list) or
+    mtool.checkPermission('Modify portal content', contact_list)):
         raise Unauthorized("You can't edit this contact list")
 
     if not contact_list.contacts:
@@ -74,7 +75,8 @@ def replace_list(contact_list, contacts):
     @return: objects - the list of contacts that have been actually added
     """
     mtool = ploneapi.portal.get_tool('portal_membership')
-    if not mtool.checkPermission('cmf.ModifyPortalContent', contact_list):
+    if not(mtool.checkPermission('cmf.ModifyPortalContent', contact_list) or
+    mtool.checkPermission('Modify portal content', contact_list)):
         raise Unauthorized("You can't edit this contact list")
 
     intids = getUtility(IIntIds)

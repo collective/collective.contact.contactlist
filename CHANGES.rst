@@ -17,6 +17,10 @@ Changelog
 - Fix update_list API for empty list
   [ebrehault]
 
+- Fix permissions in API
+  [ebrehault]
+
+
 1.0 (2014-06-16)
 ----------------
 
