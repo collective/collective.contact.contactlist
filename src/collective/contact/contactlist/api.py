@@ -36,7 +36,8 @@ def create_list(title, description, contacts, list_type='contact_list'):
                                            type=list_type, title=title,
                                            description=description)
     intids = getUtility(IIntIds)
-    contact_list.contacts = [RelationValue(intids.getId(obj))
+    if contacts:
+        contact_list.contacts = [RelationValue(intids.getId(obj))
                              for obj in contacts]
     modified(contact_list)
     return contact_list
