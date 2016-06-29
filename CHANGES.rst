@@ -20,12 +20,10 @@ Changelog
 - Fix permissions in API
   [ebrehault]
 
-- Make contacts field not required to avoid errors in addtolist
-  [ebrehault]
-
 
 1.0 (2014-06-16)
 ----------------
 
 - Initial release.
   [tdesvenain]
+

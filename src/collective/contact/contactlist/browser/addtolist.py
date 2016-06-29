@@ -54,7 +54,7 @@ class IAddToList(Interface):
 
     description = schema.Text(title=PMF(u"Description"), required=False)
 
-    contacts = contactsschema.ContactList(required=False)
+    contacts = contactsschema.ContactList()
 
 
 class AddToListForm(form.Form):
@@ -88,7 +88,7 @@ class AddToListForm(form.Form):
         if errors:
             return
 
-        contacts = data['contacts'] or []
+        contacts = data['contacts']
         if data['contact_list'] == CREATE_NEW_KEY:
             title, description = data['title'], data['description']
             contact_list = api.create_list(title, description or u"", contacts)
