@@ -70,12 +70,14 @@ class TestInstall(IntegrationTestCase):
 
         adapter = get_tool()
         # the sort order is undefined
-        self.assertEqual(sorted(adapter.get_lists()), sorted([list_1, list_2]))
+        self.assertEqual(sorted(adapter.get_lists(), key=lambda x: x.getId()),
+                         sorted([list_1, list_2], key=lambda x: x.getId()))
 
         self.assertEqual(adapter.get_my_lists(), [list_2])
 
-        self.assertEqual(sorted(adapter.get_editable_lists()),
-                sorted([list_1, list_2]))
+        self.assertEqual(
+            sorted(adapter.get_editable_lists(), key=lambda x: x.getId()),
+            sorted([list_1, list_2], key=lambda x: x.getId()))
 
         url = self.portal.unrestrictedTraverse('@@contactlist.mylists-url')()
         self.assertEqual(url, "http://nohost/plone/Members/testuser")
