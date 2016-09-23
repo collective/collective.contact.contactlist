@@ -82,6 +82,14 @@ class TestInstall(IntegrationTestCase):
         url = self.portal.unrestrictedTraverse('@@contactlist.mylists-url')()
         self.assertEqual(url, "http://nohost/plone/Members/testuser")
 
+        self.assertEqual(
+            adapter.get_lists_for_contact(directory.armeedeterre.corpsb),
+            [list_1, list_2])
+
+        self.assertEqual(
+            adapter.get_lists_for_contact(directory.armeedeterre.corpsa),
+            [list_1])
+
     def test_vocabularies(self):
 
         portal = self.portal

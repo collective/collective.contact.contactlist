@@ -53,7 +53,8 @@ class UserListStorage(object):
         return self.portal.Members.get(user_id, None)
 
     def get_lists_for_contact(self, contact):
-        """Get lists that contain contact."""
+        """Get lists that contain contact.
+        """
         catalog = getUtility(ICatalog)
         intids = getUtility(IIntIds)
         contact_intid = intids.queryId(contact)

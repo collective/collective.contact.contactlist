@@ -45,3 +45,7 @@ class IUserLists(Interface):
     def get_container(self):
         """Get lists container
         """
+
+    def get_lists_for_contact(self, contact):
+        """Get lists that contain contact.
+        """
