@@ -24,6 +24,10 @@ class TestInstall(IntegrationTestCase):
         self.portal = self.layer['portal']
         self.installer = api.portal.get_tool('portal_quickinstaller')
 
+    def assertListsHaveSameContents(self, contents_1, contents_2):
+        self.assertEqual(sorted([c.getPhysicalPath() for c in contents_1]),
+                         sorted([c.getPhysicalPath() for c in contents_2]))
+
     def test_product_installed(self):
         """Test if collective.contact.contactlist is installed with portal_quickinstaller."""
         self.assertTrue(self.installer.isProductInstalled('collective.contact.contactlist'))
@@ -70,23 +74,20 @@ class TestInstall(IntegrationTestCase):
 
         adapter = get_tool()
         # the sort order is undefined
-        self.assertEqual(sorted(adapter.get_lists(), key=lambda x: x.getId()),
-                         sorted([list_1, list_2], key=lambda x: x.getId()))
+        self.assertListsHaveSameContents(adapter.get_lists(), [list_1, list_2])
 
         self.assertEqual(adapter.get_my_lists(), [list_2])
 
-        self.assertEqual(
-            sorted(adapter.get_editable_lists(), key=lambda x: x.getId()),
-            sorted([list_1, list_2], key=lambda x: x.getId()))
+        self.assertListsHaveSameContents(adapter.get_editable_lists(), [list_1, list_2])
 
         url = self.portal.unrestrictedTraverse('@@contactlist.mylists-url')()
         self.assertEqual(url, "http://nohost/plone/Members/testuser")
 
-        self.assertEqual(
+        self.assertListsHaveSameContents(
             adapter.get_lists_for_contact(directory.armeedeterre.corpsb),
             [list_1, list_2])
 
-        self.assertEqual(
+        self.assertListsHaveSameContents(
             adapter.get_lists_for_contact(directory.armeedeterre.corpsa),
             [list_1])
 

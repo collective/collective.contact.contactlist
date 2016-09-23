@@ -5,6 +5,9 @@ Changelog
 1.1 (unreleased)
 ----------------
 
+- More robust unit tests.
+  [thomasdesvenain]
+
 - Add get_lists_for_contact method to get all lists that contain contact.
   [cedricmessiant]
 
