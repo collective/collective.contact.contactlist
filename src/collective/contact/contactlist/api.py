@@ -8,7 +8,7 @@ from z3c.relationfield.relation import RelationValue
 from plone import api as ploneapi
 
 from collective.contact.contactlist.interfaces import IUserLists
-
+from collective.contact.contactlist import log
 
 def get_tool():
     """Get list storage of current user
@@ -43,6 +43,11 @@ def create_list(title, description, contacts, list_type='contact_list'):
 
 
 def update_list(contact_list, contacts):
+    log.warning("update_list function is deprecated, use extend_list instead")
+    return extend_list(contact_list, contacts)
+
+
+def extend_list(contact_list, contacts):
     """Add contacts to a contact list
     @param contact_list: object - The contact list object
     @param contacts: objects - A list of contact objects

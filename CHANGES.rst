@@ -5,7 +5,9 @@ Changelog
 1.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- API: deprecate update_list method and create extend_list instead,
+  which is less ambiguous.
+  [thomasdesvenain]
 
 
 1.1 (2016-09-23)

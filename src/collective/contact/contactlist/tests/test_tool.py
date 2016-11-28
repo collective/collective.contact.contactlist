@@ -8,7 +8,7 @@ from plone.app.testing import login
 from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.app.testing import TEST_USER_ID
 
-from collective.contact.contactlist.api import create_list, update_list,\
+from collective.contact.contactlist.api import create_list, extend_list,\
     get_contacts
 from collective.contact.contactlist.testing import IntegrationTestCase
 from collective.contact.contactlist.api import get_tool
@@ -53,7 +53,7 @@ class TestInstall(IntegrationTestCase):
         user_folder = portal.Members[TEST_USER_ID]
         self.assertIn('corpses', user_folder)
         self.assertEqual(len(user_folder.corpses.contacts), 2)
-        update_list(user_folder.corpses, [directory.armeedeterre.corpsa,
+        extend_list(user_folder.corpses, [directory.armeedeterre.corpsa,
                                           directory.armeedeterre.corpsa.divisionalpha])
         self.assertEqual(len(user_folder.corpses.contacts), 3)
         contacts = get_contacts(user_folder.corpses)
