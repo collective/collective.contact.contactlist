@@ -17,6 +17,7 @@ class ListsVocabulary(object):
 
     def _sorted_lists(self, lists):
         user_id = api.user.get_current().getId()
+
         def sort_lists(list1, list2):
             if list1.Creator() == list2.Creator():
                 return cmp(list1.Title(), list2.Title())
@@ -34,7 +35,7 @@ class ListsVocabulary(object):
                      b.UID(),
                      b.UID(),
                      self.render_list(b))
-                 for b in contact_lists]
+                for b in contact_lists]
 
     def render_list(self, contact_list):
         creator = contact_list.Creator()
@@ -89,6 +90,7 @@ class MyListsVocabulary(ListsVocabulary):
 
 
 CREATE_NEW_KEY = 'create-new-list'
+
 
 class AddToListVocabulary(EditableListsVocabulary):
     """All lists user can edit + list creation option

@@ -141,7 +141,6 @@ class TestInstall(IntegrationTestCase):
                          set([portal.mydirectory.armeedeterre.corpsa,
                               portal.mydirectory.armeedeterre.corpsb]))
 
-
         replaceview = portal.restrictedTraverse('@@contactlist.replace-list')
         replaceview.request['form.widgets.contact_list'] = new_list.UID()
         replaceview.request['form.widgets.contacts'] = ['/plone/mydirectory/armeedeterre/corpsb']

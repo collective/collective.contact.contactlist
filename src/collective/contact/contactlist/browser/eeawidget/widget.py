@@ -50,11 +50,6 @@ class Widget(CheckboxWidget):
         contacts = get_contacts(*[c.getObject() for c in contact_lists],
                                 operator=self.data.get('operator', 'or'))
         contact_uids = [IUUID(c) for c in contacts]
-
-        if not value:
-            return query
-
-        value = atdx_normalize(value)
         query[index] = contact_uids
         return query
 

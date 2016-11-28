@@ -5,6 +5,9 @@ Changelog
 1.2 (unreleased)
 ----------------
 
+- Minor optimizations and PEP8.
+  [thomasdesvenain]
+
 - API: deprecate update_list method and create extend_list instead,
   which is less ambiguous.
   [thomasdesvenain]
