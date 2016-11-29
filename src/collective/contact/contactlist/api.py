@@ -89,6 +89,7 @@ def get_contacts(*contact_lists, **kwargs):
     """Get the contacts from one or many contact list(s)
     kwargs can have an 'operator' option ('and' or 'or')
     so we make union or intersection of lists
+    default is 'or'
     """
     operator = kwargs.pop('operator', 'or')
     if operator not in ('and', 'or'):
@@ -97,21 +98,24 @@ def get_contacts(*contact_lists, **kwargs):
         raise ValueError("Unhandled parameter(s): %s" % kwargs.keys())
     elif len(contact_lists) == 0:
         return []
-
-    if operator == 'or':
+    elif len(contact_lists) == 1:
+        return map(lambda c: c.to_object, contact_lists[0].contacts)
+    elif operator == 'or':
         contacts = set()
         for contact_list in contact_lists:
             if not contact_list.contacts:
                 continue
             contacts |= set(map(lambda c: c.to_object, contact_list.contacts))
+        return list(contacts)
     elif operator == 'and':
         contacts = set(map(lambda c: c.to_object, contact_lists[0].contacts))
         for contact_list in contact_lists[1:]:
             if not contact_list.contacts or not contacts:
                 return []
             contacts &= set(map(lambda c: c.to_object, contact_list.contacts))
-
-    return list(contacts)
+        return list(contacts)
+    else:
+        raise ValueError()
 
 
 def _check_edit_permissions(contact_list):

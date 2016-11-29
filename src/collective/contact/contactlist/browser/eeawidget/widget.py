@@ -4,13 +4,14 @@ from zope.interface import Interface
 from zope.interface import implements
 from plone import api
 
-from eea.facetednavigation.dexterity_support import normalize as atdx_normalize
 from eea.facetednavigation.widgets.checkbox.widget import Widget as CheckboxWidget
 from eea.facetednavigation import EEAMessageFactory as _
 
 from collective.contact.contactlist.api import get_contacts
 from plone.uuid.interfaces import IUUID
 
+
+# Archetypes
 EditSchema = CheckboxWidget.edit_schema.copy()
 EditSchema['vocabulary'].default = 'collective.contact.contactlist.lists'
 EditSchema['vocabulary'].vocabulary_factory='collective.contact.contactlist.vocabularies'
@@ -46,6 +47,10 @@ class Widget(CheckboxWidget):
             value = self.default
         else:
             value = form.get(self.data.getId(), '')
+
+        if not value:
+            return query
+
         contact_lists = api.portal.get_tool('portal_catalog')(UID=value)
         contacts = get_contacts(*[c.getObject() for c in contact_lists],
                                 operator=self.data.get('operator', 'or'))
@@ -67,22 +72,12 @@ class Widget(CheckboxWidget):
         if not index_id:
             return res
 
-        res[""] = res['all'] = len(brains)
-        for value in sequence:
-            if not value:
-                res[value] = len(brains)
-                continue
-
-            contacts = get_contacts(api.content.get(UID=value))
-            contact_uids = [IUUID(c) for c in contacts]
-            num = len([b for b in brains if b.UID in contact_uids])
-            normalized_value = atdx_normalize(value)
-            if isinstance(value, unicode):
-                res[value] = num
-            elif isinstance(normalized_value, unicode):
-                res[normalized_value] = num
-            else:
-                unicode_value = value.decode('utf-8')
-                res[unicode_value] = num
+        brain_uids = {b.UID for b in brains}
+        res[""] = res['all'] = len(brain_uids)
+        for list_uid in sequence:
+            contacts = get_contacts(api.content.get(UID=list_uid))
+            list_contact_uids = {c.UID() for c in contacts}
+            num = len(brain_uids.intersection(list_contact_uids))
+            res[list_uid] = num
 
         return res

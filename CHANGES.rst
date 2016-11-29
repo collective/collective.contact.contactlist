@@ -5,6 +5,9 @@ Changelog
 1.2 (unreleased)
 ----------------
 
+- Test eea widget.
+  [thomasdesvenain]
+
 - API: Added a source binder that allows developers
   to restrict ContactChoice fields on contents of contact lists.
   [thomasdesvenain]

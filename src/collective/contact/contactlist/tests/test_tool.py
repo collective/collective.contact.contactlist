@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Setup/installation tests for this package."""
 from collective.contact.contactlist.source import ContactListSourceBinder
+from plone.uuid.interfaces import IUUID
 from zope.component import getUtility
 from zope.schema.interfaces import IVocabularyFactory
 from plone import api
@@ -200,7 +201,6 @@ class TestTool(IntegrationTestCase):
         self.assertEqual(get_contacts(new_list), [])
 
     def test_source(self):
-
         def assertTermsMatchContents(contents_1, contents_2):
             self.assertEqual(sorted([c.token for c in contents_1]),
                              sorted(['/'.join(c.getPhysicalPath()) for c in contents_2]))
@@ -248,3 +248,89 @@ class TestTool(IntegrationTestCase):
                                          )(portal)
         assertTermsMatchContents(source.search(''),
                                  [directory.armeedeterre.corpsb])
+
+    def test_eea_widget(self):
+        from collective.contact.contactlist.browser.eeawidget.widget import Widget
+        portal = self.portal
+        login(portal, 'testuser')
+        directory = portal.mydirectory
+        mylist = create_list("Corpses", "Description of my list",
+                             [directory.armeedeterre.corpsa, directory.armeedeterre.corpsb]
+                             )
+        mylist2 = create_list("Corpses", "Description of my list",
+                              [directory.armeedeterre, directory.armeedeterre.corpsb]
+                              )
+
+        class FakeData(object):
+            hidden = False
+
+            def __init__(self, data):
+                self.data = data
+
+            def getId(self):
+                return 'contact_lists'
+
+            def get(self, val, default=None):
+                return self.data.get(val, default)
+
+        class FakeRequest(object):
+            debug = False
+
+        widget = Widget(self.portal, FakeRequest(), data=FakeData({'index': 'UID'}))
+
+        form = {'contact_lists': [IUUID(mylist)]}
+        query = widget.query(form=form)
+        self.assertItemsEqual(query['UID'], [
+            IUUID(directory.armeedeterre.corpsa),
+            IUUID(directory.armeedeterre.corpsb)
+        ])
+
+        # check empty cases
+        form = {'contact_lists': []}
+        query = widget.query(form=form)
+        self.assertEqual(query, {})
+
+        form = {'contact_lists': None}
+        query = widget.query(form=form)
+        self.assertEqual(query, {})
+
+        form = {}
+        query = widget.query(form=form)
+        self.assertEqual(query, {})
+
+        # or operator
+        form = {'contact_lists': [IUUID(mylist), IUUID(mylist2)]}
+        query = widget.query(form=form)
+        self.assertItemsEqual(query['UID'], [
+            IUUID(directory.armeedeterre),
+            IUUID(directory.armeedeterre.corpsa),
+            IUUID(directory.armeedeterre.corpsb),
+        ])
+
+        # and operator
+        widget = Widget(self.portal, FakeRequest(),
+                        data=FakeData({'index': 'UID', 'operator': 'and'}))
+        form = {'contact_lists': [IUUID(mylist), IUUID(mylist2)]}
+        query = widget.query(form=form)
+        self.assertItemsEqual(query['UID'], [
+            IUUID(directory.armeedeterre.corpsb)]
+                         )
+
+        form = {'contact_lists': [IUUID(mylist)]}
+        query = widget.query(form=form)
+        self.assertItemsEqual(query['UID'], [
+            IUUID(directory.armeedeterre.corpsa),
+            IUUID(directory.armeedeterre.corpsb)]
+                         )
+
+        widget = Widget(self.portal, FakeRequest(),
+                        data=FakeData({'index': 'UID',
+                                       'vocabulary': 'collective.contact.contactlist.lists'
+                                       }))
+        count = widget.count(api.content.find(portal_type='organization'))
+        self.assertEqual(count, {
+            IUUID(mylist): 2,
+            IUUID(mylist2): 2,
+            '': 7,
+            'all': 7
+        })
