@@ -5,12 +5,54 @@ collective.contact.contactlist
 This add-on is part of the ``collective.contact.*`` suite. For an overview and a demo of these suite, see `collective.contact.demo <https://github.com/collective/collective.contact.demo>`__.
 
 Users can can manage lists of contacts.
-Adds an action to add a content to an existing or a new list.
+Adds an action to search and add a content to an existing or a new list.
+
+Lists handles any contact type: organization, person or held position.
+
 
 Installation
 ============
 
-By default, you need to turn on Member folder creation.
+You need to turn on Member folder creation.
+
+API
+===
+
+An helper api to manage contact lists: ::
+
+    def extend_list(contact_list, contacts):
+        """Add contacts to a contact list
+        @param contact_list: object - The contact list object
+        @param contacts: objects - A list of contact objects
+        @return: objects - the list of contacts that have been actually added
+        """
+
+    def replace_list(contact_list, contacts):
+        """Replace the contacts of a contact list
+        @param contact_list: object - The contact list object
+        @param contacts: objects - A list of contact objects
+        @return: objects - the list of contacts that have been actually added
+        """
+
+    def get_contacts(*contact_lists, **kwargs):
+        """Get the contacts from one or many contact list(s)
+        kwargs can have an 'operator' option ('and' or 'or')
+        so we make union or intersection of lists
+        default is 'or'
+        """
+
+
+Vocabularies
+============
+
+- `collective.contact.contactlist.lists`: all lists user can see.
+  Lists shared to user are distinguished with owner's name.
+- `collective.contact.contactlist.alllists`: all lists user can view, without distinction,
+- `collective.contact.contactlist.editablelists`: all lists user can edit,
+- `collective.contact.contactlist.mylists`: all lists created by user,
+- `collective.contact.contactlist.addtolist`: all lists user can edit + list creation option
+- `collective.contact.contactlist.vocabularies`: vocabulary of all previous vocabularies.
+
 
 Integration with collective.contact.facetednav
 ==============================================
