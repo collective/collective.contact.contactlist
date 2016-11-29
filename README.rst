@@ -22,6 +22,28 @@ you can batch select contacts and add them to lists
 You have a new widget "contacts list", wich display your lists.
 It filters your results on the contents of the lists you have selected.
 
+Use ContactListSourceBinder
+===========================
+
+When you write a schema,
+you can filter choices of a ContactChoice (or ContactList) field on the contacts of one or many lists: ::
+
+        birthday_guests = ContactList(
+            title=u"Birthday guests",
+            value_type=ContactChoice(
+                source=ContactListSourceBinder(
+                    contact_lists_query={'Subject': 'Friends'}),
+                    contact_lists_operator='or',
+                    portal_type=("person",),
+                )
+            )
+        )
+
+This works like ContactSourceBinder from collective.contact.widget, but it also gets a
+countact_lists_query parameter, wich is a catalog query dictionnary. Contacts displayed by formwidget
+query are filtered on the union or intersection (depending on contact_lists_operator) of the lists we get using this query.
+
+
 Tests
 =====
 

@@ -91,19 +91,25 @@ def get_contacts(*contact_lists, **kwargs):
     so we make union or intersection of lists
     """
     operator = kwargs.pop('operator', 'or')
-    if len(kwargs) > 0:
+    if operator not in ('and', 'or'):
+        raise ValueError("Operator must be 'and' or 'or'.")
+    elif len(kwargs) > 0:
         raise ValueError("Unhandled parameter(s): %s" % kwargs.keys())
+    elif len(contact_lists) == 0:
+        return []
 
-    contacts = set()
-    for contact_list in contact_lists:
-        if not contact_list.contacts:
-            continue
-        if operator == 'or':
-            contacts |= set([c.to_object for c in contact_list.contacts
-                             if c.to_object])
-        elif operator == 'and':
-            contacts &= set([c.to_object for c in contact_list.contacts
-                             if c.to_object])
+    if operator == 'or':
+        contacts = set()
+        for contact_list in contact_lists:
+            if not contact_list.contacts:
+                continue
+            contacts |= set(map(lambda c: c.to_object, contact_list.contacts))
+    elif operator == 'and':
+        contacts = set(map(lambda c: c.to_object, contact_lists[0].contacts))
+        for contact_list in contact_lists[1:]:
+            if not contact_list.contacts or not contacts:
+                return []
+            contacts &= set(map(lambda c: c.to_object, contact_list.contacts))
 
     return list(contacts)
 
@@ -111,5 +117,5 @@ def get_contacts(*contact_lists, **kwargs):
 def _check_edit_permissions(contact_list):
     mtool = ploneapi.portal.get_tool('portal_membership')
     if not (mtool.checkPermission('cmf.ModifyPortalContent', contact_list) or
-            mtool.checkPermission('Modify portal content', contact_list)):
+                mtool.checkPermission('Modify portal content', contact_list)):
         raise Unauthorized("You can't edit this contact list")

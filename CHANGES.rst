@@ -5,10 +5,17 @@ Changelog
 1.2 (unreleased)
 ----------------
 
+- API: Added a source binder that allows developers
+  to restrict ContactChoice fields on contents of contact lists.
+  [thomasdesvenain]
+
+- get_contacts with 'and' operator was broken.
+  [thomasdesvenain]
+
 - Minor optimizations and PEP8.
   [thomasdesvenain]
 
-- API: deprecate update_list method and create extend_list instead,
+- API: deprecate update_list function and create extend_list instead,
   which is less ambiguous.
   [thomasdesvenain]
 

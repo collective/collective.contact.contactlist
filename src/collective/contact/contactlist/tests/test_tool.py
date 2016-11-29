@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Setup/installation tests for this package."""
-
+from collective.contact.contactlist.source import ContactListSourceBinder
 from zope.component import getUtility
 from zope.schema.interfaces import IVocabularyFactory
 from plone import api
@@ -8,15 +8,17 @@ from plone.app.testing import login
 from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.app.testing import TEST_USER_ID
 
-from collective.contact.contactlist.api import create_list, extend_list,\
-    get_contacts
+from collective.contact.contactlist.api import create_list, extend_list, \
+    get_contacts, replace_list
 from collective.contact.contactlist.testing import IntegrationTestCase
 from collective.contact.contactlist.api import get_tool
-from collective.contact.contactlist.vocabularies import MyListsVocabulary,\
+from collective.contact.contactlist.vocabularies import MyListsVocabulary, \
     ListsVocabulary, CREATE_NEW_KEY
 
 
-class TestInstall(IntegrationTestCase):
+# TODO: tests should not depend on collective.contact.core test data...
+
+class TestTool(IntegrationTestCase):
     """Test installation of collective.contact.contactlist into Plone."""
 
     def setUp(self):
@@ -60,6 +62,50 @@ class TestInstall(IntegrationTestCase):
         self.assertEqual(len(contacts), 3)
         self.assertIn(directory.armeedeterre.corpsa, contacts)
 
+    def test_get_contacts(self):
+        portal = self.portal
+        login(portal, TEST_USER_NAME)
+        directory = portal.mydirectory
+        contacts = [directory.armeedeterre.corpsa, directory.armeedeterre]
+        list1 = create_list("List 1", "Description of my list", contacts)
+        contacts = [directory.armeedeterre.corpsa, directory.armeedeterre.corpsb]
+        list2 = create_list("List 2", "Description of my list", contacts)
+        list3 = create_list("List 3", "Description of my list", [])
+
+        self.assertListsHaveSameContents(
+            get_contacts(list1, list2, operator='or'),
+            [directory.armeedeterre, directory.armeedeterre.corpsa, directory.armeedeterre.corpsb])
+
+        self.assertListsHaveSameContents(
+            get_contacts(list1, list3, operator='or'),
+            [directory.armeedeterre.corpsa, directory.armeedeterre])
+
+        self.assertListsHaveSameContents(
+            get_contacts(list3, list1, operator='or'),
+            [directory.armeedeterre.corpsa, directory.armeedeterre])
+
+        self.assertListsHaveSameContents(
+            get_contacts(list1, list2, operator='and'),
+            [directory.armeedeterre.corpsa])
+
+        self.assertListsHaveSameContents(
+            get_contacts(list1, operator='and'),
+            [directory.armeedeterre.corpsa, directory.armeedeterre])
+
+        self.assertListsHaveSameContents(
+            get_contacts(list3, operator='and'),
+            [])
+
+    def test_replace_list(self):
+        portal = self.portal
+        login(portal, TEST_USER_NAME)
+        directory = portal.mydirectory
+        list1 = create_list("List 1", "Description of my list",
+                            [directory.armeedeterre])
+        contacts = [directory.armeedeterre.corpsa, directory.armeedeterre.corpsb]
+        replace_list(contact_list=list1, contacts=contacts)
+        self.assertListsHaveSameContents(get_contacts(list1), contacts)
+
     def test_adapter(self):
         portal = self.portal
         directory = portal.mydirectory
@@ -92,7 +138,6 @@ class TestInstall(IntegrationTestCase):
             [list_1])
 
     def test_vocabularies(self):
-
         portal = self.portal
         directory = portal.mydirectory
         login(portal, TEST_USER_NAME)
@@ -109,7 +154,7 @@ class TestInstall(IntegrationTestCase):
         self.assertEqual(len(my_lists_vocabulary._terms), 1)
 
         lists_vocabulary = getUtility(IVocabularyFactory,
-                                         name=ListsVocabulary.name)(portal)
+                                      name=ListsVocabulary.name)(portal)
         self.assertEqual(len(lists_vocabulary._terms), 2)
         self.assertEqual(lists_vocabulary._terms[0].title, "Divisions")
         self.assertEqual(lists_vocabulary._terms[1].title, "Corpses (%s)" % TEST_USER_ID)
@@ -153,3 +198,53 @@ class TestInstall(IntegrationTestCase):
         removeview.request['uids'] = [portal.mydirectory.armeedeterre.corpsb.UID()]
         removeview()
         self.assertEqual(get_contacts(new_list), [])
+
+    def test_source(self):
+
+        def assertTermsMatchContents(contents_1, contents_2):
+            self.assertEqual(sorted([c.token for c in contents_1]),
+                             sorted(['/'.join(c.getPhysicalPath()) for c in contents_2]))
+
+        portal = self.portal
+        login(portal, 'testuser')
+        directory = portal.mydirectory
+        create_list("Corpses", "Description of my list",
+                    [directory.armeedeterre.corpsa, directory.armeedeterre.corpsb],
+                    Subject=["test-subject"])
+        create_list("Corpses 2", "Description of my list", [directory.armeedeterre.corpsb],
+                    Subject=["test-subject"])
+        create_list("Divisions", "Description of my list",
+                    [directory.armeedeterre.corpsa.divisionalpha, directory.armeedeterre.corpsa.divisionbeta],
+                    Subject=["test-subject-2"])
+
+        # or operator works
+        source = ContactListSourceBinder(contact_lists_query={'Subject': 'test-subject'},
+                                         contact_lists_operator='or',
+                                         portal_type='organization')(portal)
+        assertTermsMatchContents(source.search(''),
+                                 [directory.armeedeterre.corpsa, directory.armeedeterre.corpsb])
+
+        # and operator works
+        source = ContactListSourceBinder(contact_lists_query={'Subject': 'test-subject'},
+                                         contact_lists_operator='and',
+                                         portal_type='organization')(portal)
+        assertTermsMatchContents(source.search(''),
+                                 [directory.armeedeterre.corpsb])
+
+        # combines well with content filter
+        source = ContactListSourceBinder(contact_lists_query={'id': 'corpses'}, getId='corpsb')(portal)
+        assertTermsMatchContents(source.search(''),
+                                 [directory.armeedeterre.corpsb])
+
+        # combines well with specific query filter
+        source = ContactListSourceBinder(contact_lists_query={'Subject': 'test-subject'},
+                                         contact_lists_operator='or',
+                                         portal_type='organization')(portal)
+        assertTermsMatchContents(source.search('path:/mydirectory/armeedeterre/corpsb'),
+                                 [directory.armeedeterre.corpsb])
+
+        # works without content filter
+        source = ContactListSourceBinder(contact_lists_query={'id': 'corpses-2'},
+                                         )(portal)
+        assertTermsMatchContents(source.search(''),
+                                 [directory.armeedeterre.corpsb])
