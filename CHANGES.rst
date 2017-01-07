@@ -22,6 +22,9 @@ Changelog
   which is less ambiguous.
   [thomasdesvenain]
 
+- Fix get_contacts API for empty list
+  [ebrehault]
+
 
 1.1 (2016-09-23)
 ----------------

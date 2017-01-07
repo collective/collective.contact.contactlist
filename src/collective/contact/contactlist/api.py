@@ -99,6 +99,8 @@ def get_contacts(*contact_lists, **kwargs):
     elif len(contact_lists) == 0:
         return []
     elif len(contact_lists) == 1:
+        if not contact_lists[0].contacts:
+            return []
         return map(lambda c: c.to_object, contact_lists[0].contacts)
     elif operator == 'or':
         contacts = set()
