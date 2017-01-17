@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='collective.contact.contactlist',
-    version='1.2.dev0',
+    version='1.2',
     description="Manage lists of contacts",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers

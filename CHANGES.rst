@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.2 (unreleased)
+1.2 (2017-01-17)
 ----------------
 
 - Test eea widget.
