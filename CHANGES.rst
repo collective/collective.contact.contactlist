@@ -5,7 +5,25 @@ Changelog
 1.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Test eea widget.
+  [thomasdesvenain]
+
+- API: Added a source binder that allows developers
+  to restrict ContactChoice fields on contents of contact lists.
+  [thomasdesvenain]
+
+- get_contacts with 'and' operator was broken.
+  [thomasdesvenain]
+
+- Minor optimizations and PEP8.
+  [thomasdesvenain]
+
+- API: deprecate update_list function and create extend_list instead,
+  which is less ambiguous.
+  [thomasdesvenain]
+
+- Fix get_contacts API for empty list
+  [ebrehault]
 
 
 1.1 (2016-09-23)

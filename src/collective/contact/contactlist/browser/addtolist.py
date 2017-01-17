@@ -99,7 +99,7 @@ class AddToListForm(form.Form):
                                           'title': title}))
         else:
             contact_list = ploneapi.content.get(UID=data['contact_list'])
-            added_contacts = api.update_list(contact_list, contacts)
+            added_contacts = api.extend_list(contact_list, contacts)
             IStatusMessage(self.request).add(
                                _('msg_list_updated',
                                  default=u"${title} list updated with ${num} contact(s)",

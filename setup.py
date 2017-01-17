@@ -52,6 +52,7 @@ setup(
             'ecreall.helpers.testing',
             'plone.app.testing',
             'plone.app.robotframework',
+            'eea.facetednavigation<10.0.0'
         ],
     },
     entry_points="""
