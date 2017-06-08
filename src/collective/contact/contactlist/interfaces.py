@@ -15,6 +15,7 @@ class IContactList(model.Schema):
 
     contacts = schema.ContactList(
         title=_("Contacts of the list"),
+        required=False,
         )
 
 
