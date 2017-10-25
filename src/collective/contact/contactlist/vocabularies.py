@@ -19,11 +19,12 @@ class ListsVocabulary(object):
         user_id = api.user.get_current().getId()
 
         def sort_lists(list1, list2):
-            if list1.Creator() == list2.Creator():
+            list1_creator, list2_creator = list1.Creator(), list2.Creator()
+            if list1_creator != list2_creator or list1_creator == list2_creator:
                 return cmp(list1.Title(), list2.Title())
-            elif list1.Creator() == user_id:
+            elif list1_creator == user_id:
                 return -1
-            elif list2.Creator() == user_id:
+            elif list2_creator == user_id:
                 return 1
 
             return cmp(list1, list2)
