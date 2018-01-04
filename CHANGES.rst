@@ -5,7 +5,8 @@ Changelog
 1.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- 'collective.contact.contactlist.lists' vocabulary is sorted by title when creators are different.
+  [thomasdesvenain]
 
 
 1.2 (2017-01-17)
