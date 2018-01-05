@@ -2,8 +2,10 @@ Changelog
 =========
 
 
-1.3 (unreleased)
+2.0 (unreleased)
 ----------------
+
+- BREAKING: get_contacts gets a generator. [thomasdesvenain]
 
 - 'collective.contact.contactlist.lists' vocabulary is sorted by title when creators are different.
   + few fixes on list order

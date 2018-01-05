@@ -22,19 +22,18 @@ class ContactListSource(ContactSource):
         # get contacts from lists
         contact_lists_contacts = api.get_contacts(
             *contact_lists, operator=self.contact_lists_operator)
-        if len(contact_lists_contacts) == 0:
-            return []
 
-        lists_contacts_tokens = [
+        lists_contacts_tokens = (
             "/".join(contact.getPhysicalPath())
             for contact in contact_lists_contacts
-            ]
+        )
 
         # get query_results
         if len(self.selectable_filter.criteria) == len(query) == 0:
             return (self.getTermByToken(token) for token in lists_contacts_tokens)
 
-        contacts_query_result = list(super(ContactListSource, self).search(query, **kwargs))
+        lists_contacts_tokens = set(lists_contacts_tokens)
+        contacts_query_result = super(ContactListSource, self).search(query, **kwargs)
         return (query_contact for query_contact in contacts_query_result
                 if query_contact.token in lists_contacts_tokens)
 

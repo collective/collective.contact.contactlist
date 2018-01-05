@@ -35,7 +35,7 @@ An helper api to manage contact lists: ::
         """
 
     def get_contacts(*contact_lists, **kwargs):
-        """Get the contacts from one or many contact list(s)
+        """Get a generator of the contacts from one or many contact list(s)
         kwargs can have an 'operator' option ('and' or 'or')
         so we make union or intersection of lists
         default is 'or'

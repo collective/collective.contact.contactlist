@@ -1,4 +1,5 @@
 from AccessControl.unauthorized import Unauthorized
+from plone.uuid.interfaces import IUUID
 from zope.component import getMultiAdapter, getUtility
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import modified
@@ -86,7 +87,7 @@ def replace_list(contact_list, contacts):
 
 
 def get_contacts(*contact_lists, **kwargs):
-    """Get the contacts from one or many contact list(s)
+    """Get an iterator generator of the contacts from one or many contact list(s)
     kwargs can have an 'operator' option ('and' or 'or')
     so we make union or intersection of lists
     default is 'or'
@@ -97,25 +98,44 @@ def get_contacts(*contact_lists, **kwargs):
     elif len(kwargs) > 0:
         raise ValueError("Unhandled parameter(s): %s" % kwargs.keys())
     elif len(contact_lists) == 0:
-        return []
+        return
     elif len(contact_lists) == 1:
         if not contact_lists[0].contacts:
-            return []
-        return map(lambda c: c.to_object, contact_lists[0].contacts)
+            return
+        for rel in contact_lists[0].contacts:
+            if rel is not None:
+                contact = rel.to_object
+                if contact is not None:
+                    yield contact
+
     elif operator == 'or':
-        contacts = set()
+        yielded = set()
         for contact_list in contact_lists:
             if not contact_list.contacts:
                 continue
-            contacts |= set(map(lambda c: c.to_object, contact_list.contacts))
-        return list(contacts)
+            for rel in contact_list.contacts:
+                if rel is None:
+                    continue
+
+                contact = rel.to_object
+                if contact is None:
+                    continue
+
+                uuid = IUUID(contact)
+                if uuid not in yielded:
+                    yielded.add(uuid)
+                    yield contact
+
     elif operator == 'and':
         contacts = set(map(lambda c: c.to_object, contact_lists[0].contacts))
         for contact_list in contact_lists[1:]:
             if not contact_list.contacts or not contacts:
-                return []
+                return
             contacts &= set(map(lambda c: c.to_object, contact_list.contacts))
-        return list(contacts)
+        for contact in contacts:
+            if contact:
+                yield contact
+
     else:
         raise ValueError()
 

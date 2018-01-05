@@ -59,7 +59,7 @@ class TestTool(IntegrationTestCase):
         extend_list(user_folder.corpses, [directory.armeedeterre.corpsa,
                                           directory.armeedeterre.corpsa.divisionalpha])
         self.assertEqual(len(user_folder.corpses.contacts), 3)
-        contacts = get_contacts(user_folder.corpses)
+        contacts = list(get_contacts(user_folder.corpses))
         self.assertEqual(len(contacts), 3)
         self.assertIn(directory.armeedeterre.corpsa, contacts)
 
@@ -181,7 +181,7 @@ class TestTool(IntegrationTestCase):
         addview.form_instance.applySave(addview.form_instance, None)
         self.assertIn('my-new-list', portal.Members.testuser)
         new_list = portal.Members.testuser['my-new-list']
-        self.assertEqual(get_contacts(new_list),
+        self.assertEqual(list(get_contacts(new_list)),
                          [portal.mydirectory.armeedeterre.corpsa])
 
         addview.request['form.widgets.contact_list'] = new_list.UID()
@@ -203,7 +203,7 @@ class TestTool(IntegrationTestCase):
         removeview = new_list.restrictedTraverse('@@contactlist.remove-from-list')
         removeview.request['uids'] = [portal.mydirectory.armeedeterre.corpsb.UID()]
         removeview()
-        self.assertEqual(get_contacts(new_list), [])
+        self.assertEqual(list(get_contacts(new_list)), [])
 
     def test_source(self):
         def assertTermsMatchContents(contents_1, contents_2):
