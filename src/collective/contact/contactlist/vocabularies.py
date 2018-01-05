@@ -20,14 +20,14 @@ class ListsVocabulary(object):
 
         def sort_lists(list1, list2):
             list1_creator, list2_creator = list1.Creator(), list2.Creator()
-            if list1_creator != list2_creator or list1_creator == list2_creator:
-                return cmp(list1.Title(), list2.Title())
+            if list1_creator == list2_creator:
+                return cmp(list1.Title().lower(), list2.Title().lower())
             elif list1_creator == user_id:
                 return -1
             elif list2_creator == user_id:
                 return 1
-
-            return cmp(list1, list2)
+            else:
+                return cmp(list1_creator, list2_creator)
 
         return sorted(lists, cmp=sort_lists)
 
@@ -58,20 +58,12 @@ class ListsVocabulary(object):
         return SimpleVocabulary(self._get_terms(lists))
 
 
-class AllListsVocabulary(ListsVocabulary):
-    """All lists user can view, without distinction
-    """
-    name = 'collective.contact.contactlist.alllists'
-
-    def _sorted_lists(self, lists):
-        return sorted(lists, key=lambda x: x.Title())
-
-    def render_list(self, contact_list):
-        return contact_list.Title()
+def _list_sort_key(x):
+    return x.Title().lower()
 
 
 class EditableListsVocabulary(ListsVocabulary):
-    """All lists user can edit
+    """All lists user can edit, sorted by creator
     """
     name = 'collective.contact.contactlist.editablelists'
 
@@ -81,13 +73,25 @@ class EditableListsVocabulary(ListsVocabulary):
         return editable_lists
 
 
-class MyListsVocabulary(ListsVocabulary):
+class AllListsVocabulary(ListsVocabulary):
+    """All lists user can view, without distinction
+    """
+    name = 'collective.contact.contactlist.alllists'
+
+    def _sorted_lists(self, lists):
+        return sorted(lists, key=_list_sort_key)
+
+    def render_list(self, contact_list):
+        return contact_list.Title()
+
+
+class MyListsVocabulary(AllListsVocabulary):
     """All lists created by user
     """
     name = 'collective.contact.contactlist.mylists'
 
     def _get_lists(self):
-        return get_tool().get_my_lists()
+        return self._sorted_lists(get_tool().get_my_lists())
 
 
 CREATE_NEW_KEY = 'create-new-list'
@@ -108,6 +112,8 @@ class AddToListVocabulary(EditableListsVocabulary):
 
 
 class ContactListVocabularies(object):
+    """Vocabulary of vocabularies, for eea.facetednavigation for instance
+    """
     name = 'collective.contact.contactlist.vocabularies'
     implements(IVocabularyFactory)
     vocabularies = (ListsVocabulary, MyListsVocabulary, EditableListsVocabulary,

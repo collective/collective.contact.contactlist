@@ -6,6 +6,7 @@ Changelog
 ----------------
 
 - 'collective.contact.contactlist.lists' vocabulary is sorted by title when creators are different.
+  + few fixes on list order
   [thomasdesvenain]
 
 

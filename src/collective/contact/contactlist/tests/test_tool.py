@@ -150,15 +150,20 @@ class TestTool(IntegrationTestCase):
                     directory.armeedeterre.corpsb]
         create_list("Divisions", "Description of my list", contacts)
 
+        create_list("armies", "", [directory.armeedeterre])
+
         my_lists_vocabulary = getUtility(IVocabularyFactory,
                                          name=MyListsVocabulary.name)(portal)
-        self.assertEqual(len(my_lists_vocabulary._terms), 1)
+        self.assertEqual(len(my_lists_vocabulary._terms), 2)
+        self.assertEqual(my_lists_vocabulary._terms[0].title, "armies")
+        self.assertEqual(my_lists_vocabulary._terms[1].title, "Divisions")
 
         lists_vocabulary = getUtility(IVocabularyFactory,
                                       name=ListsVocabulary.name)(portal)
-        self.assertEqual(len(lists_vocabulary._terms), 2)
-        self.assertEqual(lists_vocabulary._terms[0].title, "Divisions")
-        self.assertEqual(lists_vocabulary._terms[1].title, "Corpses (%s)" % TEST_USER_ID)
+        self.assertEqual(len(lists_vocabulary._terms), 3)
+        self.assertEqual(lists_vocabulary._terms[0].title, "armies")
+        self.assertEqual(lists_vocabulary._terms[1].title, "Divisions")
+        self.assertEqual(lists_vocabulary._terms[2].title, "Corpses (%s)" % TEST_USER_ID)
 
     def test_views(self):
         portal = self.portal
