@@ -20,14 +20,12 @@ class ListsVocabulary(object):
 
         def sort_lists(list1, list2):
             list1_creator, list2_creator = list1.Creator(), list2.Creator()
-            if list1_creator == list2_creator:
-                return cmp(list1.Title().lower(), list2.Title().lower())
-            elif list1_creator == user_id:
+            if list1_creator == user_id and list1_creator != list2_creator:
                 return -1
-            elif list2_creator == user_id:
+            elif list2_creator == user_id and list1_creator != list2_creator:
                 return 1
             else:
-                return cmp(list1_creator, list2_creator)
+                return cmp(list1.Title().lower(), list2.Title().lower())
 
         return sorted(lists, cmp=sort_lists)
 
