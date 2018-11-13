@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.3 (unreleased)
+1.3 (2018-11-13)
 ----------------
 
 - 'collective.contact.contactlist.lists' vocabulary is sorted by title when creators are different.
