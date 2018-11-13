@@ -1,3 +1,5 @@
 graft src/collective
-graft docs/
-include *.cfg *.rst *.in
+graft docs
+graft buildout.d
+include *.cfg *.rst *.in *.py
+global-exclude *.pyc
