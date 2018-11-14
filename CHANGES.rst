@@ -2,11 +2,11 @@ Changelog
 =========
 
 
-1.4 (unreleased)
+2.0 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Made it compatible with eea.facetednavigation >= 10.0. Branch 1.x is compatible with eea.facetednavigation < 10.0
+  [sgeulette]
 
 1.3 (2018-11-13)
 ----------------
@@ -67,4 +67,3 @@ Changelog
 
 - Initial release.
   [tdesvenain]
-

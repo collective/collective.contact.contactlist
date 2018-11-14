@@ -1,22 +1,19 @@
 """ Select widget
 """
-from zope.interface import Interface
-from zope.interface import implements
-from plone import api
-
-from eea.facetednavigation.widgets.checkbox.widget import Widget as CheckboxWidget
-from eea.facetednavigation import EEAMessageFactory as _
-
 from collective.contact.contactlist.api import get_contacts
+from eea.facetednavigation import EEAMessageFactory as _
+from eea.facetednavigation.widgets.checkbox.interfaces import ICheckboxSchema
+from eea.facetednavigation.widgets.checkbox.widget import Widget as CheckboxWidget
+from plone import api
 from plone.uuid.interfaces import IUUID
+from zope.interface import implements
+from zope.interface import Interface
+
+import copy
 
 
-# Archetypes
-EditSchema = CheckboxWidget.edit_schema.copy()
-EditSchema['vocabulary'].default = 'collective.contact.contactlist.lists'
-EditSchema['vocabulary'].vocabulary_factory='collective.contact.contactlist.vocabularies'
-EditSchema['index'].default = 'UID'
-EditSchema['index'].widget.visible = -1
+class IContactListSchema(ICheckboxSchema):
+    pass
 
 
 class IContactListWidget(Interface):
@@ -32,7 +29,23 @@ class Widget(CheckboxWidget):
     widget_label = _('Contact lists')
     css_class = 'faceted-checkboxes-widget faceted-contactlist-widget'
 
-    edit_schema = EditSchema
+    def updateWidgets(self, prefix=None):
+        super(Widget, self).updateWidgets(prefix=prefix)
+        group = [g for g in self.groups if g.label == u'default'][0]
+        voc_fld = group.fields['vocabulary']
+        voc_fld.field = copy.copy(voc_fld.field)
+        voc_fld.field.vocabularyName = u'collective.contact.contactlist.vocabularies'
+        ind_fld = group.fields['index']
+        ind_fld.field = copy.copy(ind_fld.field)
+        ind_fld.field.readonly = True
+
+    def update(self):
+        super(Widget, self).update()
+        group = [g for g in self.groups if g.label == u'default'][0]
+        voc_wd = group.widgets['vocabulary']
+        voc_wd.value = ['collective.contact.contactlist.lists']
+        ind_wd = group.widgets['index']
+        ind_wd.value = ['UID']
 
     def query(self, form):
         """ Get value from form and return a catalog dict query

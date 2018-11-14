@@ -5,6 +5,6 @@
 
   <include package="eea.facetednavigation" file="meta.zcml" />
   <include package="eea.facetednavigation" />
-  <faceted:widget factory=".widget.Widget" />
+  <faceted:widget factory=".widget.Widget" schema=".widget.IContactListSchema"/>
 
 </configure>

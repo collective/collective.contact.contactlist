@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='collective.contact.contactlist',
-    version='1.4.dev0',
+    version='2.0.dev0',
     description="Manage lists of contacts",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -52,7 +52,7 @@ setup(
             'ecreall.helpers.testing',
             'plone.app.testing',
             'plone.app.robotframework',
-            'eea.facetednavigation<10.0.0'
+            'eea.facetednavigation>=10.0'
         ],
     },
     entry_points="""
