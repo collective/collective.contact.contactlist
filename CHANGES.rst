@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-2.0 (unreleased)
+2.0 (2019-04-24)
 ----------------
 
 - Made it compatible with eea.facetednavigation >= 10.0. Branch 1.x is compatible with eea.facetednavigation < 10.0
