@@ -26,9 +26,9 @@ setup(
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
+        "Framework :: Plone :: 6.1",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.13",
     ],
     keywords='crm',
     author='Thomas Desvenain',
@@ -52,7 +52,7 @@ setup(
             'ecreall.helpers.testing',
             'plone.app.testing',
             'plone.app.robotframework',
-            'eea.facetednavigation>=10.0'
+            'eea.facetednavigation'
         ],
     },
     entry_points="""

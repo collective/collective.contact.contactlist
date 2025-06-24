@@ -95,26 +95,26 @@ def get_contacts(*contact_lists, **kwargs):
     if operator not in ('and', 'or'):
         raise ValueError("Operator must be 'and' or 'or'.")
     elif len(kwargs) > 0:
-        raise ValueError("Unhandled parameter(s): %s" % kwargs.keys())
+        raise ValueError("Unhandled parameter(s): %s" % list(kwargs.keys()))
     elif len(contact_lists) == 0:
         return []
     elif len(contact_lists) == 1:
         if not contact_lists[0].contacts:
             return []
-        return map(lambda c: c.to_object, contact_lists[0].contacts)
+        return [c.to_object for c in contact_lists[0].contacts]
     elif operator == 'or':
         contacts = set()
         for contact_list in contact_lists:
             if not contact_list.contacts:
                 continue
-            contacts |= set(map(lambda c: c.to_object, contact_list.contacts))
+            contacts |= set([c.to_object for c in contact_list.contacts])
         return list(contacts)
     elif operator == 'and':
-        contacts = set(map(lambda c: c.to_object, contact_lists[0].contacts))
+        contacts = set([c.to_object for c in contact_lists[0].contacts])
         for contact_list in contact_lists[1:]:
             if not contact_list.contacts or not contacts:
                 return []
-            contacts &= set(map(lambda c: c.to_object, contact_list.contacts))
+            contacts &= set([c.to_object for c in contact_list.contacts])
         return list(contacts)
     else:
         raise ValueError()

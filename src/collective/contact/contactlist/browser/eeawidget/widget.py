@@ -1,12 +1,12 @@
 """ Select widget
 """
 from collective.contact.contactlist.api import get_contacts
-from eea.facetednavigation import EEAMessageFactory as _
+from eea.facetednavigation import _
 from eea.facetednavigation.widgets.checkbox.interfaces import ICheckboxSchema
 from eea.facetednavigation.widgets.checkbox.widget import Widget as CheckboxWidget
 from plone import api
 from plone.uuid.interfaces import IUUID
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 import copy
@@ -20,10 +20,10 @@ class IContactListWidget(Interface):
     pass
 
 
+@implementer(IContactListWidget)
 class Widget(CheckboxWidget):
     """ Widget
     """
-    implements(IContactListWidget)
     # Widget properties
     widget_type = 'contactlist'
     widget_label = _('Contact lists')

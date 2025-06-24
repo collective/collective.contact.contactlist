@@ -1,7 +1,8 @@
 from zc.relation.interfaces import ICatalog
 from zope.component import getUtility
 from zope.component import adapts
-from zope.interface import Interface, implements
+from zope.interface import Interface
+from zope.interface import implementer
 from zope.intid.interfaces import IIntIds
 
 from plone import api as ploneapi
@@ -9,9 +10,9 @@ from plone import api as ploneapi
 from collective.contact.contactlist.interfaces import IUserLists, IContactList
 
 
+@implementer(IUserLists)
 class UserListStorage(object):
     adapts(Interface, Interface, Interface)
-    implements(IUserLists)
 
     def __init__(self, user, portal, request):
         self.user = user
@@ -41,7 +42,7 @@ class UserListStorage(object):
         """Lists created by user
         """
         container = self.get_container()
-        return [o for o in container.values() if IContactList.providedBy(o)]
+        return [o for o in list(container.values()) if IContactList.providedBy(o)]
 
     def get_container(self):
         """Get lists container

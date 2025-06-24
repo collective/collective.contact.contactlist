@@ -1,4 +1,4 @@
-from zope.interface import implements
+from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -8,11 +8,11 @@ from collective.contact.contactlist.api import get_tool
 from collective.contact.contactlist import _
 
 
+@implementer(IVocabularyFactory)
 class ListsVocabulary(object):
     """All lists user can see.
     Lists shared to user are distinguished with owner's name.
     """
-    implements(IVocabularyFactory)
     name = 'collective.contact.contactlist.lists'
 
     def _sorted_lists(self, lists):
@@ -109,11 +109,11 @@ class AddToListVocabulary(EditableListsVocabulary):
         return SimpleVocabulary(terms)
 
 
+@implementer(IVocabularyFactory)
 class ContactListVocabularies(object):
     """Vocabulary of vocabularies, for eea.facetednavigation for instance
     """
     name = 'collective.contact.contactlist.vocabularies'
-    implements(IVocabularyFactory)
     vocabularies = (ListsVocabulary, MyListsVocabulary, EditableListsVocabulary,
                     AllListsVocabulary)
 
