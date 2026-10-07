@@ -1,13 +1,12 @@
-from zc.relation.interfaces import ICatalog
-from zope.component import getUtility
-from zope.component import adapts
-from zope.interface import Interface
-from zope.interface import implementer
-from zope.intid.interfaces import IIntIds
-
+from collective.contact.contactlist.interfaces import IContactList
+from collective.contact.contactlist.interfaces import IUserLists
 from plone import api as ploneapi
-
-from collective.contact.contactlist.interfaces import IUserLists, IContactList
+from zc.relation.interfaces import ICatalog
+from zope.component import adapts
+from zope.component import getUtility
+from zope.interface import implementer
+from zope.interface import Interface
+from zope.intid.interfaces import IIntIds
 
 
 @implementer(IUserLists)

@@ -1,22 +1,20 @@
-from zope.interface import Interface
-from zope import schema
-from zope.i18nmessageid import MessageFactory
-
-from z3c.form import form
-from z3c.form import field
-from z3c.form import button
-from z3c.form.interfaces import HIDDEN_MODE
-
-from Products.statusmessages.interfaces import IStatusMessage
+from collective.contact.contactlist import _
+from collective.contact.contactlist import api
+from collective.contact.widget import schema as contactsschema
 from plone import api as ploneapi
 from plone.protect import PostOnly
 from plone.z3cform.layout import wrap_form
-
-from collective.contact.widget import schema as contactsschema
-from collective.contact.contactlist import _, api
-
+from Products.statusmessages.interfaces import IStatusMessage
+from z3c.form import button
+from z3c.form import field
+from z3c.form import form
+from z3c.form.interfaces import HIDDEN_MODE
+from zope import schema
+from zope.i18nmessageid import MessageFactory
+from zope.interface import Interface
 
 PMF = MessageFactory('plone')
+
 
 class IReplaceList(Interface):
 
@@ -59,15 +57,14 @@ class ReplaceListForm(form.Form):
 
         self.request.response.redirect(contact_list.absolute_url())
 
-
     @button.buttonAndHandler(PMF('Cancel'), name="cancel")
     def applyCancel(self, action):
         self.request.response.redirect(self.context.absolute_url())
 
 
 replace_list = wrap_form(
-        ReplaceListForm,
-        label=_(u"Replace list contacts"),
-        description=_('help_replace_list',
-                      default=u"Replace contacts of selected list with selected contacts")
-    )
+    ReplaceListForm,
+    label=_(u"Replace list contacts"),
+    description=_('help_replace_list',
+                  default=u"Replace contacts of selected list with selected contacts")
+)

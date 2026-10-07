@@ -1,6 +1,6 @@
-from collective.contact.facetednav.browser.actions.base import BatchActionBase
 from collective.contact.contactlist import _
 from collective.contact.contactlist.api import get_tool
+from collective.contact.facetednav.browser.actions.base import BatchActionBase
 
 
 class AddToListAction(BatchActionBase):

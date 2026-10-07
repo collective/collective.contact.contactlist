@@ -1,12 +1,10 @@
+from collective.contact.contactlist import _
+from collective.contact.contactlist.interfaces import ICollectiveContactContactlistLayer
+from collective.contact.contactlist.interfaces import IContactList
+from collective.excelexport.datasources.base import BaseContentsDataSource
+from plone.app.layout.viewlets.common import ViewletBase
 from zope.component import adapts
 from zope.i18n import translate
-
-from plone.app.layout.viewlets.common import ViewletBase
-
-from collective.excelexport.datasources.base import BaseContentsDataSource
-from collective.contact.contactlist.interfaces import IContactList,\
-    ICollectiveContactContactlistLayer
-from collective.contact.contactlist import _
 
 
 class ContactListDataSource(BaseContentsDataSource):

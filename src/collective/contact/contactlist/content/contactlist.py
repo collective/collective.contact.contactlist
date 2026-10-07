@@ -1,9 +1,7 @@
-from zope.interface import implementer
-
+from collective.contact.contactlist.interfaces import IContactList
 from plone.dexterity.content import Container
 from plone.dexterity.schema import DexteritySchemaPolicy
-
-from collective.contact.contactlist.interfaces import IContactList
+from zope.interface import implementer
 
 
 @implementer(IContactList)

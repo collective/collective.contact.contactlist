@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 """Setup/installation tests for this package."""
+from collective.contact.contactlist.api import create_list
+from collective.contact.contactlist.api import extend_list
+from collective.contact.contactlist.api import get_contacts
+from collective.contact.contactlist.api import get_tool
+from collective.contact.contactlist.api import replace_list
 from collective.contact.contactlist.source import ContactListSourceBinder
+from collective.contact.contactlist.testing import IntegrationTestCase
+from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
+from collective.contact.contactlist.vocabularies import ListsVocabulary
+from collective.contact.contactlist.vocabularies import MyListsVocabulary
+from plone import api
+from plone.app.testing import login
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.uuid.interfaces import IUUID
 from zope.component import getUtility
 from zope.schema.interfaces import IVocabularyFactory
-from plone import api
-from plone.app.testing import login
-from plone.app.testing.interfaces import TEST_USER_NAME
-from plone.app.testing import TEST_USER_ID
-
-from collective.contact.contactlist.api import create_list, extend_list, \
-    get_contacts, replace_list
-from collective.contact.contactlist.testing import IntegrationTestCase
-from collective.contact.contactlist.api import get_tool
-from collective.contact.contactlist.vocabularies import MyListsVocabulary, \
-    ListsVocabulary, CREATE_NEW_KEY
-
 
 # TODO: tests should not depend on collective.contact.core test data...
+
 
 class TestTool(IntegrationTestCase):
     """Test installation of collective.contact.contactlist into Plone."""
@@ -43,7 +45,9 @@ class TestTool(IntegrationTestCase):
     # browserlayer.xml
     def test_browserlayer(self):
         """Test that ICollectiveContactContactlistLayer is registered."""
-        from collective.contact.contactlist.interfaces import ICollectiveContactContactlistLayer
+        from collective.contact.contactlist.interfaces import (
+            ICollectiveContactContactlistLayer,
+        )
         from plone.browserlayer import utils
         self.assertIn(ICollectiveContactContactlistLayer, utils.registered_layers())
 

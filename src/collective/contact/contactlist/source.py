@@ -1,6 +1,7 @@
-from copy import deepcopy
-from collective.contact.widget.source import ContactSourceBinder, ContactSource
 from collective.contact.contactlist import api
+from collective.contact.widget.source import ContactSource
+from collective.contact.widget.source import ContactSourceBinder
+from copy import deepcopy
 from plone import api as ploneapi
 
 

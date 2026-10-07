@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Base module for unittesting."""
 
+from plone import api
 from plone.app.robotframework.testing import AUTOLOGIN_LIBRARY_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
@@ -12,11 +13,10 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.testing import z2
-from plone import api
-import unittest2 as unittest
 
-import collective.contact.core
 import collective.contact.contactlist
+import collective.contact.core
+import unittest2 as unittest
 
 
 class CollectiveContactContactlistLayer(PloneSandboxLayer):

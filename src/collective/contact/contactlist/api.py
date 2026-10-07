@@ -1,14 +1,12 @@
 from AccessControl.unauthorized import Unauthorized
-from zope.component import getMultiAdapter, getUtility
+from collective.contact.contactlist import log
+from collective.contact.contactlist.interfaces import IUserLists
+from plone import api as ploneapi
+from z3c.relationfield.relation import RelationValue
+from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import modified
-
-from z3c.relationfield.relation import RelationValue
-
-from plone import api as ploneapi
-
-from collective.contact.contactlist.interfaces import IUserLists
-from collective.contact.contactlist import log
 
 
 def get_tool():
