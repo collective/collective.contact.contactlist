@@ -25,14 +25,16 @@
         directory="profiles/default"
         description="Installs the collective.contact.contactlist add-on."
         provides="Products.GenericSetup.interfaces.EXTENSION"
+        post_handler=".setuphandlers.post_install"
         />
 
-    <genericsetup:importStep
-        name="collective.contact.contactlist-postInstall"
-        title="collective.contact.contactlist post_install import step"
-        description="Post install import step from collective.contact.contactlist"
-        handler=".setuphandlers.post_install">
-    </genericsetup:importStep>
+    <genericsetup:registerProfile
+        name="uninstall"
+        title="collective.contact.contactlist (uninstall)"
+        directory="profiles/uninstall"
+        description="Uninstalls the collective.contact.contactlist add-on."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
 
 
     <!--  Vocabularies -->

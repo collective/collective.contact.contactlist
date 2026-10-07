@@ -1,33 +1,23 @@
-from zope.interface import implements
+from collective.contact.contactlist import _
+from collective.contact.contactlist.api import get_tool
+from plone import api
+from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 
-from plone import api
 
-from collective.contact.contactlist.api import get_tool
-from collective.contact.contactlist import _
-
-
+@implementer(IVocabularyFactory)
 class ListsVocabulary(object):
     """All lists user can see.
     Lists shared to user are distinguished with owner's name.
     """
-    implements(IVocabularyFactory)
     name = 'collective.contact.contactlist.lists'
 
     def _sorted_lists(self, lists):
         user_id = api.user.get_current().getId()
 
-        def sort_lists(list1, list2):
-            list1_creator, list2_creator = list1.Creator(), list2.Creator()
-            if list1_creator == user_id and list1_creator != list2_creator:
-                return -1
-            elif list2_creator == user_id and list1_creator != list2_creator:
-                return 1
-            else:
-                return cmp(list1.Title().lower(), list2.Title().lower())
-
-        return sorted(lists, cmp=sort_lists)
+        # current user's lists first, then by title
+        return sorted(lists, key=lambda cl: (cl.Creator() != user_id, cl.Title().lower()))
 
     def _get_terms(self, contact_lists):
         return [SimpleVocabulary.createTerm(
@@ -109,11 +99,11 @@ class AddToListVocabulary(EditableListsVocabulary):
         return SimpleVocabulary(terms)
 
 
+@implementer(IVocabularyFactory)
 class ContactListVocabularies(object):
     """Vocabulary of vocabularies, for eea.facetednavigation for instance
     """
     name = 'collective.contact.contactlist.vocabularies'
-    implements(IVocabularyFactory)
     vocabularies = (ListsVocabulary, MyListsVocabulary, EditableListsVocabulary,
                     AllListsVocabulary)
 

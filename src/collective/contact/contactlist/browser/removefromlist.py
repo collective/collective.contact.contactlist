@@ -1,9 +1,10 @@
+from collective.contact.contactlist import _
+from collective.contact.contactlist.api import get_contacts
+from collective.contact.contactlist.api import replace_list
+from plone.protect import PostOnly
+from plone.uuid.interfaces import IUUID
 from Products.Five.browser import BrowserView
 from Products.statusmessages.interfaces import IStatusMessage
-from plone.uuid.interfaces import IUUID
-from plone.protect import PostOnly
-from collective.contact.contactlist.api import get_contacts, replace_list
-from collective.contact.contactlist import _
 
 
 class RemoveFromList(BrowserView):

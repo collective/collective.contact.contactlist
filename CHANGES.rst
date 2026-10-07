@@ -5,7 +5,26 @@ Changelog
 2.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Plone 6 migration:
+  replaced the Plone 4 overlays with `pat-plone-modal` (the "Add to list" action uses the
+  action `modal` property, faceted navigation batch actions open the modal in JavaScript),
+  used `plone.base.interfaces.IBundleRegistry` and a `contenttype/contact_list` icon,
+  enabled user folders with the `plone.enable_user_folders` record and created the `Members` folder
+  on install (Plone 6 only adds it with the example content),
+  added an uninstall profile and fixed Python 3 / Plone 6 incompatibilities
+  (sorting with `cmp`, `from_interfaces_flattened` relation query, tests).
+  [chris-adam]
+- Allowed the "Add to list" form to be prefilled by the GET request of the action
+  (`allow_prefill_from_GET_request`): the selected contact was ignored.
+  [chris-adam]
+- Registered the user lists adapter for (user, portal, request) only: as an adapter of
+  (Interface, Interface, Interface), it was used as add view by `++add++contact_list`.
+  [chris-adam]
+- Used the excel mimetype icon of the icon resolver in the excel export link (`xls.png` is gone).
+  [chris-adam]
+- Restructured the unit tests (one test module per module), added robot tests
+  (`make robot`, `make robot-server`).
+  [chris-adam]
 
 
 2.0 (2019-04-24)

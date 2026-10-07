@@ -1,0 +1,83 @@
+*** Settings ***
+Documentation  Integration with the contacts faceted navigation (collective.contact.facetednav):
+...            "Add to list" and "Replace list" batch actions and the "Contact lists" filter.
+...            In Plone 4, the batch actions opened an overlay that, after saving, showed the
+...            status message in the batch actions, refreshed the results and the list counts
+...            without reloading the page.
+...            Fails while collective.contact.facetednav is not migrated to Plone 6.
+Resource  contactlist.robot
+Test Setup  Run keywords  Open test browser  AND  Log in as manager testuser
+Test Teardown  Close all browsers
+
+
+*** Variables ***
+${BATCH_ACTIONS}  css=#contacts-facetednav-batchactions
+${ADD_TO_LIST}  css=#contact-facetednav-action-addtolist
+${REPLACE_LIST}  css=#contact-facetednav-action-replace
+${LISTS_WIDGET}  css=#lists_widget
+
+
+*** Keywords ***
+Go to the faceted directory
+    Go to  ${DIRECTORY_URL}
+    Wait until element is visible  css=.eea-preview-items
+
+Select the contact
+    [Arguments]  ${path}
+    ${uid}=  Path to uid  ${path}
+    Select checkbox  css=#contact-${uid}
+
+Check the list in the "Contact lists" filter
+    [Arguments]  ${path}
+    ${uid}=  Path to uid  ${path}
+    Select checkbox  ${LISTS_WIDGET} input[value="${uid}"]
+    Wait until element is visible  css=.eea-preview-items
+
+
+*** Test Cases ***
+The batch actions need a selection
+    Go to the faceted directory
+    Element should be visible  ${ADD_TO_LIST}
+    Element should be visible  ${REPLACE_LIST}
+    Element should be disabled  ${ADD_TO_LIST}
+    Select the contact  /plone/mydirectory/armeedeterre/corpsa
+    Element should be enabled  ${ADD_TO_LIST}
+    Element should be enabled  ${REPLACE_LIST}
+
+Add the selected contacts to a new list
+    Go to the faceted directory
+    Select the contact  /plone/mydirectory/armeedeterre/corpsa
+    Select the contact  /plone/mydirectory/armeedeterre/corpsb
+    Click button  ${ADD_TO_LIST}
+    Wait until element is visible  ${MODAL} #form-widgets-title
+    Page should contain element  ${MODAL} input[type=hidden][value="/plone/mydirectory/armeedeterre/corpsa"]
+    Page should contain element  ${MODAL} input[type=hidden][value="/plone/mydirectory/armeedeterre/corpsb"]
+    Input text  ${MODAL} #form-widgets-title  Faceted list
+    Save the modal
+    The modal is closed
+    # no reload: the message is shown in the batch actions and the filter is updated
+    Location should be  ${DIRECTORY_URL}
+    Wait until element contains  ${BATCH_ACTIONS}  New list added with 2 contact(s) : Faceted list
+    Wait until element contains  ${LISTS_WIDGET}  Faceted list
+    The list contains  ${PLONE_URL}/Members/testuser/faceted-list  Corps A  Corps B
+
+Replace the list checked in the filter
+    Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
+    Go to the faceted directory
+    Check the list in the "Contact lists" filter  /plone/Members/testuser/faceted-list
+    Select the contact  /plone/mydirectory/armeedeterre/corpsa
+    Click button  ${REPLACE_LIST}
+    Wait until element is visible  ${MODAL} #form-widgets-contact_list
+    ${uid}=  Path to uid  /plone/Members/testuser/faceted-list
+    List selection should be  ${MODAL} #form-widgets-contact_list  ${uid}
+    Save the modal
+    The modal is closed
+    Wait until element contains  ${BATCH_ACTIONS}  Faceted list list contacts has been replaced by 1 contact(s)
+
+Filter the contacts by list
+    Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
+    Go to the faceted directory
+    Element should contain  ${LISTS_WIDGET}  Faceted list (1)
+    Check the list in the "Contact lists" filter  /plone/Members/testuser/faceted-list
+    Element should contain  css=.eea-preview-items  Corps A
+    Element should not contain  css=.eea-preview-items  Corps B

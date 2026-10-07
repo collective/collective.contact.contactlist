@@ -8,12 +8,13 @@
    <property name="description"
       i18n:translate="">Add the contact to a contact list</property>
    <property
-      name="url_expr">python:portal_url + '/@@contactlist.add-to-list?form.widgets.contacts:list='+'/'.join(object.getPhysicalPath())</property>
+      name="url_expr">python:portal_url + '/@@contactlist.add-to-list?form.widgets.contacts:list='+'/'.join(object.getPhysicalPath())+'&amp;ajax_load=1'</property>
    <property name="link_target"></property>
    <property name="icon_expr"></property>
    <property name="available_expr">context/@@contactlist.can-add-to-list</property>
    <property name="permissions"/>
    <property name="visible">True</property>
+   <property name="modal" type="text">{"actionOptions": {"displayInModal": false}}</property>
   </object>
  </object>
  <object name="user" meta_type="CMF Action Category">

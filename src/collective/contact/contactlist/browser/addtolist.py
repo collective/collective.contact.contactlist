@@ -1,28 +1,26 @@
-from zope.interface import Interface
-from zope import schema
-from zope.schema.interfaces import InvalidValue
-from zope.i18nmessageid import MessageFactory
-
-from z3c.form import form
-from z3c.form import field
-from z3c.form import button
-from z3c.form.interfaces import HIDDEN_MODE
-from z3c.form.error import ErrorViewSnippet
-
-from Products.statusmessages.interfaces import IStatusMessage
-from Products.Five.browser import BrowserView
-from plone import api as ploneapi
-from plone.z3cform.layout import wrap_form
-from plone.protect import PostOnly
-from plone.formwidget.masterselect import MasterSelectField
-
+from collective.contact.contactlist import _
+from collective.contact.contactlist import api
+from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
 from collective.contact.widget import schema as contactsschema
 from collective.contact.widget.interfaces import IContactContent
-from collective.contact.contactlist import _, api
-from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
-
+from plone import api as ploneapi
+from plone.formwidget.masterselect import MasterSelectField
+from plone.protect import PostOnly
+from plone.z3cform.layout import wrap_form
+from Products.Five.browser import BrowserView
+from Products.statusmessages.interfaces import IStatusMessage
+from z3c.form import button
+from z3c.form import field
+from z3c.form import form
+from z3c.form.error import ErrorViewSnippet
+from z3c.form.interfaces import HIDDEN_MODE
+from zope import schema
+from zope.i18nmessageid import MessageFactory
+from zope.interface import Interface
+from zope.schema.interfaces import InvalidValue
 
 PMF = MessageFactory('plone')
+
 
 class IAddToList(Interface):
 
@@ -32,7 +30,7 @@ class IAddToList(Interface):
         vocabulary='collective.contact.contactlist.addtolist',
         slave_fields=(
             {'name': 'title',
-             #'masterSelector': 'input[name="form.widgets.contact_list"]',
+             # 'masterSelector': 'input[name="form.widgets.contact_list"]',
              'masterId': 'form-widgets-contact_list',
              'slaveID': '#form-widgets-title',
              'action': 'show',
@@ -40,7 +38,7 @@ class IAddToList(Interface):
              'siblings': True,
             },
             {'name': 'description',
-             #'masterSelector': 'input[name="form.widgets.contact_list"]',
+             # 'masterSelector': 'input[name="form.widgets.contact_list"]',
              'masterId': 'form-widgets-contact_list',
              'slaveID': '#form-widgets-description',
              'action': 'show',
@@ -63,6 +61,8 @@ class AddToListForm(form.Form):
     ignoreContext = True
     ignoreRequest = False
     method = 'POST'
+    # the "Add to list" action opens the form with the contact in the GET request
+    allow_prefill_from_GET_request = True
 
     def updateWidgets(self):
         super(AddToListForm, self).updateWidgets()
@@ -119,17 +119,16 @@ class AddToListForm(form.Form):
         self.widgets.errors += (error,)
         return errors
 
-
     @button.buttonAndHandler(PMF('Cancel'), name="cancel")
     def applyCancel(self, action):
         self.request.response.redirect(self.context.absolute_url())
 
 
 add_to_list = wrap_form(
-        AddToListForm,
-        label=_(u"Add to list"),
-        description=_(u"Add selected contacts to selected list"),
-    )
+    AddToListForm,
+    label=_(u"Add to list"),
+    description=_(u"Add selected contacts to selected list"),
+)
 
 
 class CanAddToList(BrowserView):
