@@ -43,12 +43,16 @@ setup(
     install_requires=[
         'collective.contact.core',
         'plone.api',
+        'plone.app.contenttypes',
+        'plone.base',
         'plone.protect',
         'plone.formwidget.masterselect',
         'setuptools',
     ],
     extras_require={
         'test': [
+            'collective.contact.facetednav',
+            'collective.excelexport',
             'ecreall.helpers.testing',
             'plone.app.testing',
             'plone.app.robotframework',

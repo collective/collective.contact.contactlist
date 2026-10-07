@@ -1,67 +1,48 @@
 var contactcontactlist = {};
 
-contactcontactlist.init = function () {
-    jQuery('#plone-contentmenu-actions-contactlist-addtolist').prepOverlay({
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#form',
-        closeselector: '[name="form.buttons.cancel"]',
-        noform: function () {
-            return 'reload';
-        }
-    });
-    jQuery(document).bind('loadInsideOverlay', function (e, el) {
-        var overlay = $(el).closest('.overlay-ajax');
-        var form = jQuery(overlay).find('#form');
-        jQuery('#contacts-facetednav-batchactions').each(function () {
-            var pathes = contactfacetednav.contacts.selection_pathes();
-            jQuery(overlay).find('#formfield-form-widgets-contacts').each(function () {
-                contactcontactlist.populate_hidden_field(this, pathes);
-            });
-        });
-        // in replace list overlay, select checked list in eea contact list
-        if (form.hasClass('kssattr-formname-contactlist.replace-list')) {
-            jQuery('.faceted-contactlist-widget input:checked').first().each(function () {
-                var list_uid = jQuery(this).val();
-                form.find('#form-widgets-contact_list').val(list_uid);
-            });
-        }
-    });
-};
-
 /* Faceted navigation integration */
 
 contactcontactlist.facetednav_addtolist = function () {
-    var url = portal_url + '/@@contactlist.add-to-list';
-    contactcontactlist._facetednav_open_overlay(url);
+    contactcontactlist._facetednav_open_modal('@@contactlist.add-to-list', false);
 };
 
 contactcontactlist.facetednav_replacelist = function () {
-    var url = portal_url + '/@@contactlist.replace-list';
-    contactcontactlist._facetednav_open_overlay(url);
+    contactcontactlist._facetednav_open_modal('@@contactlist.replace-list', true);
 };
 
-contactcontactlist._facetednav_open_overlay = function (url) {
-    jQuery('<a href="' + url + '?ajax_load=1">Edit</a>').prepOverlay({
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#form',
-        closeselector: '[name="form.buttons.cancel"]',
-        noform: function (el) {
-            contactfacetednav.store_overlay_messages(el);
-            Faceted.Form.do_form_query();
-            jQuery('.faceted-contactlist-widget').each(function () {
-                var widget = jQuery(this);
-                var sortcountable = widget.hasClass('faceted-sortcountable');
-                Faceted.Widgets[this.id.split('_')[0]].count(sortcountable);
+contactcontactlist._facetednav_open_modal = function (view_name, select_checked_list) {
+    var link = $('<a class="pat-plone-modal"></a>')
+        .attr('href', $('body').data('portal-url') + '/' + view_name + '?ajax_load=1')
+        .attr('data-pat-plone-modal', '{"actionOptions": {"displayInModal": false, "reloadWindowOnClose": false}}');
+    // the link is not in the page: modal events don't bubble to document, listen on it
+    link.one('after-render.plone-modal.patterns', function () {
+        var modal = link.data('pattern-plone-modal').$modal;
+        var pathes = contactfacetednav.contacts.selection_pathes();
+        modal.find('#formfield-form-widgets-contacts').each(function () {
+            contactcontactlist.populate_hidden_field(this, pathes);
+        });
+        // in replace list modal, select checked list in eea contact list
+        if (select_checked_list) {
+            $('.faceted-contactlist-widget input:checked').first().each(function () {
+                modal.find('#form-widgets-contact_list').val($(this).val());
             });
-            return 'close';
         }
-    }).click();
+    });
+    link.on('formActionSuccess.plone-modal.patterns', function (e, response) {
+        contactfacetednav.store_overlay_messages($('<div>').append($.parseHTML(response)));
+        Faceted.Form.do_form_query();
+        $('.faceted-contactlist-widget').each(function () {
+            var widget = $(this);
+            var sortcountable = widget.hasClass('faceted-sortcountable');
+            Faceted.Widgets[this.id.split('_')[0]].count(sortcountable);
+        });
+    });
+    window.__patternslib_registry['plone-modal'].init(link);
+    link.trigger('click');
 };
 
 contactcontactlist.populate_hidden_field = function (field, pathes) {
-    var elt = jQuery('#formfield-form-widgets-contacts');
+    var elt = jQuery(field);
     for (var num in pathes) {
         if (pathes.hasOwnProperty(num)) {
             var path = pathes[num];
@@ -70,5 +51,3 @@ contactcontactlist.populate_hidden_field = function (field, pathes) {
         }
     }
 };
-
-jQuery(document).ready(contactcontactlist.init);

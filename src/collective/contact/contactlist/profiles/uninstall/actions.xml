@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_actions" meta_type="Plone Actions Tool">
+ <object name="object_buttons" meta_type="CMF Action Category">
+  <object name="contactlist-addtolist" remove="True" />
+ </object>
+ <object name="user" meta_type="CMF Action Category">
+  <object name="contact-contactlist-mylists" remove="True" />
+ </object>
+</object>

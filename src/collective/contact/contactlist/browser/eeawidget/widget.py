@@ -52,7 +52,6 @@ class Widget(CheckboxWidget):
         """
         query = {}
         index = self.data.get('index', '') or 'UID'
-        index = index.encode('utf-8', 'replace')
         if not index:
             return query
 

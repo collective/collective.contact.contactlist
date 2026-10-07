@@ -67,6 +67,17 @@ test: oneof-plone bin/buildout  ## run bin/test without robot
 	# can be run by example with: make test opt='-t "settings"'
 	bin/test -t \!robot ${opt}
 
+.PHONY: robot
+robot: oneof-plone bin/buildout  ## run robot tests in headless firefox
+	# can be run by example with: make robot opt='-t "Add a contact*"'
+	# test_facetednav.robot fails while collective.contact.facetednav is not migrated to Plone 6
+	MOZ_HEADLESS=1 bin/test --all --layer ACCEPTANCE ${opt}
+
+.PHONY: robot-server
+robot-server:  ## Starts robot server (layer=ADDONS_ACCEPTANCE for test_facetednav and test_excelexport)
+	# run a robot file against it with: bin/robot src/collective/contact/contactlist/tests/robot/test_addtolist.robot
+	env ZSERVER_HOST=localhost ZSERVER_PORT=55001 bin/robot-server --no-reload -v collective.contact.contactlist.testing.$(or $(layer),ACCEPTANCE)
+
 .PHONY: cleanall
 cleanall:  ## Cleans all installed buildout files
 	rm -fr bin include lib local share develop-eggs downloads eggs parts .installed.cfg .mr.developer.cfg .python-version pyvenv.cfg

@@ -1,0 +1,6 @@
+<registry>
+  <records prefix="plone.bundles/collective-contact-contactlist"
+           interface="plone.base.interfaces.IBundleRegistry"
+           remove="True" />
+  <record name="plone.icon.contenttype/contact_list" remove="True" />
+</registry>
