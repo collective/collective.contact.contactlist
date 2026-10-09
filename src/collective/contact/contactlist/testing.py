@@ -2,6 +2,7 @@
 """Base module for unittesting."""
 
 from collective.contact.facetednav.interfaces import IActionsEnabled
+from eea.facetednavigation.interfaces import ICriteria
 from eea.facetednavigation.subtypes.interfaces import IFacetedNavigable
 from plone import api
 from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
@@ -15,13 +16,14 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.testing import zope
+from zope.globalrequest import clearRequest
+from zope.globalrequest import setLocal
 from zope.interface import alsoProvides
 
 import collective.contact.contactlist
 import collective.contact.core
 import collective.contact.facetednav
 import collective.excelexport
-import collective.js.backbone
 import os
 import transaction
 import unittest
@@ -46,6 +48,7 @@ class CollectiveContactContactlistLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
+        setLocal('request', portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
         # Install into Plone site using portal_setup
         applyProfile(portal, 'collective.contact.core:testing')
         # insert some test data
@@ -71,6 +74,7 @@ class CollectiveContactContactlistLayer(PloneSandboxLayer):
 
         # Commit so that the test browser sees these objects
         transaction.commit()
+        clearRequest()  # else the next layers get a request bound to a closed connection
 
     def tearDownZope(self, app):
         """Tear down Zope."""
@@ -107,19 +111,21 @@ class CollectiveContactContactlistAddonsLayer(PloneSandboxLayer):
     defaultBases = (FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        # dependency of the facetednav profile, loaded by z3c.autoinclude in an instance
-        self.loadZCML(package=collective.js.backbone)
         self.loadZCML(package=collective.contact.facetednav)
         self.loadZCML(package=collective.excelexport)
 
     def setUpPloneSite(self, portal):
+        setLocal('request', portal.REQUEST)  # collective.fingerpointing
         applyProfile(portal, 'collective.contact.facetednav:default')
         directory = portal.mydirectory
         alsoProvides(directory, IFacetedNavigable, IActionsEnabled)
         with open(os.path.join(os.path.dirname(__file__), 'tests', 'contacts-faceted.xml'), 'rb') as xml:
             directory.unrestrictedTraverse('@@faceted_exportimport')._import_xml(import_file=xml)
+        # eea.facetednavigation 16 imports booleans with Bool.fromUnicode: the "1" of the xml is False
+        ICriteria(directory).edit('lists', count=True)
         directory.reindexObject()
         transaction.commit()
+        clearRequest()
 
 
 ADDONS_FIXTURE = CollectiveContactContactlistAddonsLayer(

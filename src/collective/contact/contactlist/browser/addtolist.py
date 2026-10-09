@@ -61,6 +61,8 @@ class AddToListForm(form.Form):
     ignoreContext = True
     ignoreRequest = False
     method = 'POST'
+    # plone.app.z3cform: renders the _authenticator and checks it when a button is clicked
+    enableCSRFProtection = True
     # the "Add to list" action opens the form with the contact in the GET request
     allow_prefill_from_GET_request = True
 

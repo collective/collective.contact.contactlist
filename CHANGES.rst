@@ -2,9 +2,13 @@ Changelog
 =========
 
 
-2.1 (unreleased)
-----------------
+3.0.0 (unreleased)
+------------------
 
+- Migrate to Plone 6.2, drop Plone 4 support, based on the work started on `plone6` with @laulaz.
+  [laulaz, chris-adam]
+- Faceted batch actions: open the modal with `patPloneModal` (it never opened), escape the added contacts, CSRF token on the forms.
+  [chris-adam]
 - Plone 6 migration:
   replaced the Plone 4 overlays with `pat-plone-modal` (the "Add to list" action uses the
   action `modal` property, faceted navigation batch actions open the modal in JavaScript),

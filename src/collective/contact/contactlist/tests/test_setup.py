@@ -39,6 +39,13 @@ class TestSetup(IntegrationTestCase):
         add_view = self.portal.Members.testuser.restrictedTraverse('++add++contact_list')
         self.assertIsInstance(add_view, DefaultAddView)
 
+    def test_bundle(self):
+        # classic script, only used at click time: no dependency on eea.facetednavigation's (optional) bundles
+        bundle = 'plone.bundles/collective-contact-contactlist'
+        self.assertEqual(api.portal.get_registry_record(bundle + '.depends'), 'plone')
+        self.assertTrue(api.portal.get_registry_record(bundle + '.load_defer'))
+        self.assertFalse(api.portal.get_registry_record(bundle + '.load_async'))
+
     def test_uninstall(self):
         self.installer.uninstall_product('collective.contact.contactlist')
         self.assertFalse(self.installer.is_product_installed('collective.contact.contactlist'))

@@ -33,6 +33,8 @@ class ReplaceListForm(form.Form):
     ignoreContext = True
     ignoreRequest = False
     method = 'POST'
+    # plone.app.z3cform: renders the _authenticator and checks it when a button is clicked
+    enableCSRFProtection = True
 
     def updateWidgets(self):
         super(ReplaceListForm, self).updateWidgets()

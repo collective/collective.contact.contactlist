@@ -3,7 +3,9 @@
 *.pyc
 .installed.cfg
 .mr.developer.cfg
-.plone.versioncheck.tracked.json
+.plone*
+.python-version
+checkversion*
 .project
 .pydevproject
 .settings/
@@ -16,3 +18,11 @@ parts/
 src/*
 !src/collective
 var/
+htmlcov/
+.coverage
+*.html
+*.log
+output.xml
+pyvenv.cfg
+*.swp
+CACHEDIR.TAG

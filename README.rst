@@ -1,3 +1,8 @@
+.. image:: https://github.com/collective/collective.contact.contactlist/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/collective/collective.contact.contactlist/actions/workflows/main.yml
+.. image:: https://coveralls.io/repos/github/collective/collective.contact.contactlist/badge.svg
+    :target: https://coveralls.io/github/collective/collective.contact.contactlist
+
 ==========================================================================
 collective.contact.contactlist
 ==========================================================================
@@ -13,7 +18,7 @@ Lists handles any contact type: organization, person or held position.
 Installation
 ============
 
-You need to turn on Member folder creation.
+Lists are stored in the user folders: the default profile enables their creation.
 
 API
 ===
@@ -87,11 +92,3 @@ This works like ContactSourceBinder from collective.contact.widget, but it also 
 countact_lists_query parameter, wich is a catalog query dictionnary. Contacts displayed by formwidget
 query are filtered on the union or intersection (depending on contact_lists_operator) of the lists we get using this query.
 
-
-Tests
-=====
-
-This add-on is tested using Travis CI. The current status of the add-on is :
-
-.. image:: https://secure.travis-ci.org/collective/collective.contact.contactlist.png
-    :target: http://travis-ci.org/collective/collective.contact.contactlist

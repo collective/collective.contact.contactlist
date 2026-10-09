@@ -3,7 +3,9 @@ from collective.contact.contactlist.api import get_contacts
 from collective.contact.contactlist.testing import IntegrationTestCase
 from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
 from plone.app.testing import login
+from plone.protect.authenticator import createToken
 from z3c.form.interfaces import HIDDEN_MODE
+from zExceptions import Forbidden
 
 
 class TestAddToListForm(IntegrationTestCase):
@@ -42,6 +44,30 @@ class TestAddToListForm(IntegrationTestCase):
         addview.update()
         addview.form_instance.applySave(addview.form_instance, None)
         self.assertEqual(set(get_contacts(new_list)), set([army.corpsa, army.corpsb]))
+
+    def test_csrf(self):
+        # the modal form (ajax_load) has the token, the Save button needs it
+        login(self.portal, 'testuser')
+        request = self.layer['request']
+        request.form['ajax_load'] = '1'
+        addview = self.portal.restrictedTraverse('@@contactlist.add-to-list')
+        addview.update()
+        html = addview.form_instance.render()
+        self.assertIn('name="_authenticator"', html)
+        # javascript.js adds the contacts selected in the faceted navigation there
+        self.assertIn('id="formfield-form-widgets-contacts"', html)
+        request['REQUEST_METHOD'] = 'POST'
+        request.form.update({'form.widgets.contact_list': CREATE_NEW_KEY,
+                             'form.widgets.title': u"My new list",
+                             'form.widgets.contacts': ['/plone/mydirectory/armeedeterre'],
+                             'form.buttons.save': u"Save"})
+        addview = self.portal.restrictedTraverse('@@contactlist.add-to-list')
+        self.assertRaises(Forbidden, addview.update)
+        self.assertNotIn('my-new-list', self.portal.Members.testuser)
+        request.form['_authenticator'] = createToken()
+        addview = self.portal.restrictedTraverse('@@contactlist.add-to-list')
+        addview.update()
+        self.assertIn('my-new-list', self.portal.Members.testuser)
 
 
 class TestCanAddToList(IntegrationTestCase):

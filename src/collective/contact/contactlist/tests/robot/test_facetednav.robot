@@ -4,7 +4,6 @@ Documentation  Integration with the contacts faceted navigation (collective.cont
 ...            In Plone 4, the batch actions opened an overlay that, after saving, showed the
 ...            status message in the batch actions, refreshed the results and the list counts
 ...            without reloading the page.
-...            Fails while collective.contact.facetednav is not migrated to Plone 6.
 Resource  contactlist.robot
 Test Setup  Run keywords  Open test browser  AND  Log in as manager testuser
 Test Teardown  Close all browsers
@@ -21,10 +20,18 @@ ${LISTS_WIDGET}  css=#lists_widget
 Go to the faceted directory
     Go to  ${DIRECTORY_URL}
     Wait until element is visible  css=.eea-preview-items
+    The faceted query is done
+
+The faceted query is done
+    [Documentation]  the page shows the results rendered by the server until the first query (Plone 6),
+    ...              eea.facetednavigation locks the page during the queries and the counts
+    Wait until element is not visible  css=.faceted-lock-overlay
 
 Select the contact
     [Arguments]  ${path}
     ${uid}=  Path to uid  ${path}
+    # once the contacts of the results are loaded (json-contacts)
+    Wait for condition  return contactfacetednav.contacts.get('${uid}') !== undefined
     Select checkbox  css=#contact-${uid}
 
 Check the list in the "Contact lists" filter
@@ -32,6 +39,7 @@ Check the list in the "Contact lists" filter
     ${uid}=  Path to uid  ${path}
     Select checkbox  ${LISTS_WIDGET} input[value="${uid}"]
     Wait until element is visible  css=.eea-preview-items
+    The faceted query is done
 
 
 *** Test Cases ***
@@ -55,10 +63,10 @@ Add the selected contacts to a new list
     Input text  ${MODAL} #form-widgets-title  Faceted list
     Save the modal
     The modal is closed
-    # no reload: the message is shown in the batch actions and the filter is updated
-    Location should be  ${DIRECTORY_URL}
+    # no reload: the message is shown in the batch actions
+    # (Plone 6: eea.facetednavigation keeps the query in the URL hash)
+    Location should contain  ${DIRECTORY_URL}
     Wait until element contains  ${BATCH_ACTIONS}  New list added with 2 contact(s) : Faceted list
-    Wait until element contains  ${LISTS_WIDGET}  Faceted list
     The list contains  ${PLONE_URL}/Members/testuser/faceted-list  Corps A  Corps B
 
 Replace the list checked in the filter
@@ -73,6 +81,21 @@ Replace the list checked in the filter
     Save the modal
     The modal is closed
     Wait until element contains  ${BATCH_ACTIONS}  Faceted list list contacts has been replaced by 1 contact(s)
+
+Add the selected contacts to a list of the filter
+    [Documentation]  the "Contact lists" filter only shows the lists that existed when the page was loaded:
+    ...              their counts are updated
+    Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
+    Go to the faceted directory
+    Element should contain  ${LISTS_WIDGET}  Faceted list (1)
+    Select the contact  /plone/mydirectory/armeedeterre/corpsb
+    Click button  ${ADD_TO_LIST}
+    Wait until element is visible  ${MODAL} #form-widgets-contact_list
+    Select from list by label  ${MODAL} #form-widgets-contact_list  Faceted list
+    Save the modal
+    The modal is closed
+    Wait until element contains  ${BATCH_ACTIONS}  Faceted list list updated with 1 contact(s)
+    Wait until element contains  ${LISTS_WIDGET}  Faceted list (2)
 
 Filter the contacts by list
     Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
