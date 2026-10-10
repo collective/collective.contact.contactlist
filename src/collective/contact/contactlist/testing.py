@@ -60,52 +60,51 @@ expectedFailureOnPlone4 = unittest.expectedFailure if PLONE_MAJOR < 5 else (lamb
 class CollectiveContactContactlistLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE,)
-    products = ('collective.contact.contactlist',
-               )
+    products = ("collective.contact.contactlist",)
 
     def setUpZope(self, app, configurationContext):
         """Set up Zope."""
         # Load ZCML
-        self.loadZCML(package=collective.contact.contactlist,
-                      name='testing.zcml')
-        installProduct(app, 'collective.contact.contactlist')
-        self.loadZCML(package=collective.contact.core,
-                      name='testing.zcml')
+        self.loadZCML(package=collective.contact.contactlist, name="testing.zcml")
+        installProduct(app, "collective.contact.contactlist")
+        self.loadZCML(package=collective.contact.core, name="testing.zcml")
         for p in self.products:
             installProduct(app, p)
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
-        setLocal('request', portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
+        setLocal("request", portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
         # Install into Plone site using portal_setup
-        applyProfile(portal, 'collective.contact.core:testing')
+        applyProfile(portal, "collective.contact.core:testing")
         # insert some test data
-        applyProfile(portal, 'collective.contact.core:test_data')
+        applyProfile(portal, "collective.contact.core:test_data")
         # Install into Plone site using portal_setup
-        applyProfile(portal, 'collective.contact.contactlist:testing')
+        applyProfile(portal, "collective.contact.contactlist:testing")
         if PLONE_MAJOR < 5:
             # javascript of the collective.contact.widget autocomplete, installed on a Plone 4 site
-            applyProfile(portal, 'plone.formwidget.contenttree:default')
+            applyProfile(portal, "plone.formwidget.contenttree:default")
 
         # Login and create some test content
-        setRoles(portal, TEST_USER_ID, ['Manager'])
-        api.user.create(email='testuser@example.com',
-                        username='testuser',
-                        password='testuser1',
-                        roles=['Manager'],
-                        properties={'fullname': 'Test user'})
+        setRoles(portal, TEST_USER_ID, ["Manager"])
+        api.user.create(
+            email="testuser@example.com",
+            username="testuser",
+            password="testuser1",
+            roles=["Manager"],
+            properties={"fullname": "Test user"},
+        )
         # plain member without user folder
-        api.user.create(email='member@example.com', username='member', password='member123')
+        api.user.create(email="member@example.com", username="member", password="member123")
         login(portal, TEST_USER_NAME)
-        folder_id = portal.invokeFactory('Folder', 'folder')
+        folder_id = portal.invokeFactory("Folder", "folder")
         portal[folder_id].reindexObject()
-        if 'Members' not in portal:
+        if "Members" not in portal:
             # Plone 4 creates it with the site content (plone-content profile), not in PLONE_FIXTURE;
             # Plone 6: the package creates it on install
-            api.content.create(container=portal, type='Folder', id='Members')
+            api.content.create(container=portal, type="Folder", id="Members")
         members = portal.Members
-        api.content.create(container=members, type='Folder', id=TEST_USER_ID)
-        api.content.create(container=members, type='Folder', id='testuser')
+        api.content.create(container=members, type="Folder", id=TEST_USER_ID)
+        api.content.create(container=members, type="Folder", id="testuser")
 
         # Commit so that the test browser sees these objects
         transaction.commit()
@@ -117,21 +116,13 @@ class CollectiveContactContactlistLayer(PloneSandboxLayer):
             uninstallProduct(app, p)
 
 
-FIXTURE = CollectiveContactContactlistLayer(
-    name="FIXTURE"
-    )
+FIXTURE = CollectiveContactContactlistLayer(name="FIXTURE")
 
 
-INTEGRATION = IntegrationTesting(
-    bases=(FIXTURE,),
-    name="INTEGRATION"
-    )
+INTEGRATION = IntegrationTesting(bases=(FIXTURE,), name="INTEGRATION")
 
 
-FUNCTIONAL = FunctionalTesting(
-    bases=(FIXTURE,),
-    name="FUNCTIONAL"
-    )
+FUNCTIONAL = FunctionalTesting(bases=(FIXTURE,), name="FUNCTIONAL")
 
 
 class CSRFSafeContent(Content):
@@ -147,15 +138,14 @@ class CSRFSafeContent(Content):
 
 REMOTE_LIBRARY_FIXTURE = RemoteLibraryLayer(
     bases=(PLONE_FIXTURE,),
-    libraries=tuple(CSRFSafeContent if lib is Content else lib
-                    for lib in REMOTE_LIBRARY_BUNDLE_FIXTURE.libraryBases[1:]),
-    name='RemoteLibraryBundle:RobotRemote')
+    libraries=tuple(
+        CSRFSafeContent if lib is Content else lib for lib in REMOTE_LIBRARY_BUNDLE_FIXTURE.libraryBases[1:]
+    ),
+    name="RemoteLibraryBundle:RobotRemote",
+)
 
 
-ACCEPTANCE = FunctionalTesting(bases=(FIXTURE,
-                                      REMOTE_LIBRARY_FIXTURE,
-                                      SERVER_FIXTURE),
-                               name="ACCEPTANCE")
+ACCEPTANCE = FunctionalTesting(bases=(FIXTURE, REMOTE_LIBRARY_FIXTURE, SERVER_FIXTURE), name="ACCEPTANCE")
 
 
 class CollectiveContactContactlistAddonsLayer(PloneSandboxLayer):
@@ -171,27 +161,24 @@ class CollectiveContactContactlistAddonsLayer(PloneSandboxLayer):
         self.loadZCML(package=collective.excelexport)
 
     def setUpPloneSite(self, portal):
-        setLocal('request', portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
-        applyProfile(portal, 'collective.contact.facetednav:default')
+        setLocal("request", portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
+        applyProfile(portal, "collective.contact.facetednav:default")
         directory = portal.mydirectory
         # smart facets hide the criteria when the results have no pagination
         alsoProvides(directory, IFacetedNavigable, IActionsEnabled, IDisableSmartFacets)
-        with open(os.path.join(os.path.dirname(__file__), 'tests', 'contacts-faceted.xml'), 'rb') as xml:
-            directory.unrestrictedTraverse('@@faceted_exportimport')._import_xml(import_file=xml)
+        with open(os.path.join(os.path.dirname(__file__), "tests", "contacts-faceted.xml"), "rb") as xml:
+            directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(import_file=xml)
         directory.reindexObject()
         transaction.commit()
         clearRequest()
 
 
-ADDONS_FIXTURE = CollectiveContactContactlistAddonsLayer(
-    name="ADDONS_FIXTURE"
-    )
+ADDONS_FIXTURE = CollectiveContactContactlistAddonsLayer(name="ADDONS_FIXTURE")
 
 
-ADDONS_ACCEPTANCE = FunctionalTesting(bases=(ADDONS_FIXTURE,
-                                             REMOTE_LIBRARY_FIXTURE,
-                                             SERVER_FIXTURE),
-                                      name="ADDONS_ACCEPTANCE")
+ADDONS_ACCEPTANCE = FunctionalTesting(
+    bases=(ADDONS_FIXTURE, REMOTE_LIBRARY_FIXTURE, SERVER_FIXTURE), name="ADDONS_ACCEPTANCE"
+)
 
 
 class IntegrationTestCase(unittest.TestCase):
@@ -201,11 +188,12 @@ class IntegrationTestCase(unittest.TestCase):
 
     def setUp(self):
         super(IntegrationTestCase, self).setUp()
-        self.portal = self.layer['portal']
+        self.portal = self.layer["portal"]
 
     def assertListsHaveSameContents(self, contents_1, contents_2):
-        self.assertEqual(sorted([c.getPhysicalPath() for c in contents_1]),
-                         sorted([c.getPhysicalPath() for c in contents_2]))
+        self.assertEqual(
+            sorted([c.getPhysicalPath() for c in contents_1]), sorted([c.getPhysicalPath() for c in contents_2])
+        )
 
 
 class FunctionalTestCase(unittest.TestCase):

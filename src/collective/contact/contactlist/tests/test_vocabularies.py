@@ -17,7 +17,7 @@ class TestVocabularies(IntegrationTestCase):
         army = self.portal.mydirectory.armeedeterre
         login(self.portal, TEST_USER_NAME)
         create_list("Corpses", "Description of my list", [army.corpsa, army.corpsb])
-        login(self.portal, 'testuser')
+        login(self.portal, "testuser")
         create_list("Divisions", "Description of my list", [army.corpsa.divisionalpha, army.corpsb])
         create_list("armies", "", [army])
 
@@ -26,45 +26,52 @@ class TestVocabularies(IntegrationTestCase):
 
     def test_ListsVocabulary(self):
         # current user's lists first, other lists with their creator's fullname
-        self.assertEqual(self.titles('collective.contact.contactlist.lists'),
-                         ["armies", "Divisions", "Corpses (%s)" % TEST_USER_ID])
+        self.assertEqual(
+            self.titles("collective.contact.contactlist.lists"), ["armies", "Divisions", "Corpses (%s)" % TEST_USER_ID]
+        )
         login(self.portal, TEST_USER_NAME)
-        self.assertEqual(self.titles('collective.contact.contactlist.lists'),
-                         ["Corpses", "armies (Test user)", "Divisions (Test user)"])
+        self.assertEqual(
+            self.titles("collective.contact.contactlist.lists"),
+            ["Corpses", "armies (Test user)", "Divisions (Test user)"],
+        )
 
     def test_EditableListsVocabulary(self):
-        self.assertEqual(self.titles('collective.contact.contactlist.editablelists'),
-                         ["armies", "Divisions", "Corpses (%s)" % TEST_USER_ID])
+        self.assertEqual(
+            self.titles("collective.contact.contactlist.editablelists"),
+            ["armies", "Divisions", "Corpses (%s)" % TEST_USER_ID],
+        )
         # a plain member can't edit lists of other users
-        login(self.portal, 'member')
-        self.assertEqual(self.titles('collective.contact.contactlist.editablelists'), [])
+        login(self.portal, "member")
+        self.assertEqual(self.titles("collective.contact.contactlist.editablelists"), [])
 
     def test_AllListsVocabulary(self):
-        self.assertEqual(self.titles('collective.contact.contactlist.alllists'),
-                         ["armies", "Corpses", "Divisions"])
+        self.assertEqual(self.titles("collective.contact.contactlist.alllists"), ["armies", "Corpses", "Divisions"])
 
     def test_MyListsVocabulary(self):
-        self.assertEqual(self.titles('collective.contact.contactlist.mylists'), ["armies", "Divisions"])
+        self.assertEqual(self.titles("collective.contact.contactlist.mylists"), ["armies", "Divisions"])
 
     @expectedFailureOnPlone4  # AttributeError: 'NoneType' object has no attribute 'values'
     def test_MyListsVocabulary_without_user_folder(self):
-        login(self.portal, 'member')
-        self.assertEqual(self.titles('collective.contact.contactlist.mylists'), [])
+        login(self.portal, "member")
+        self.assertEqual(self.titles("collective.contact.contactlist.mylists"), [])
 
     def test_AddToListVocabulary(self):
-        vocabulary = getUtility(IVocabularyFactory, name='collective.contact.contactlist.addtolist')(self.portal)
+        vocabulary = getUtility(IVocabularyFactory, name="collective.contact.contactlist.addtolist")(self.portal)
         self.assertEqual([t.token for t in vocabulary][0], CREATE_NEW_KEY)
-        self.assertEqual([t.title for t in vocabulary][1:],
-                         ["armies", "Divisions", "Corpses (%s)" % TEST_USER_ID])
+        self.assertEqual([t.title for t in vocabulary][1:], ["armies", "Divisions", "Corpses (%s)" % TEST_USER_ID])
         # a plain member can only create a list
-        login(self.portal, 'member')
-        vocabulary = getUtility(IVocabularyFactory, name='collective.contact.contactlist.addtolist')(self.portal)
+        login(self.portal, "member")
+        vocabulary = getUtility(IVocabularyFactory, name="collective.contact.contactlist.addtolist")(self.portal)
         self.assertEqual([t.token for t in vocabulary], [CREATE_NEW_KEY])
 
     def test_ContactListVocabularies(self):
-        vocabulary = getUtility(IVocabularyFactory, name='collective.contact.contactlist.vocabularies')(self.portal)
-        self.assertEqual([t.token for t in vocabulary],
-                         ['collective.contact.contactlist.lists',
-                          'collective.contact.contactlist.mylists',
-                          'collective.contact.contactlist.editablelists',
-                          'collective.contact.contactlist.alllists'])
+        vocabulary = getUtility(IVocabularyFactory, name="collective.contact.contactlist.vocabularies")(self.portal)
+        self.assertEqual(
+            [t.token for t in vocabulary],
+            [
+                "collective.contact.contactlist.lists",
+                "collective.contact.contactlist.mylists",
+                "collective.contact.contactlist.editablelists",
+                "collective.contact.contactlist.alllists",
+            ],
+        )

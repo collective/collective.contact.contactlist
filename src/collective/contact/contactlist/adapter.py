@@ -22,48 +22,39 @@ class UserListStorage(object):
         self.request = request
 
     def get_lists_brains(self):
-        """Get brains of lists user can use
-        """
-        ctool = ploneapi.portal.get_tool('portal_catalog')
+        """Get brains of lists user can use"""
+        ctool = ploneapi.portal.get_tool("portal_catalog")
         brains = ctool.searchResults(object_provides=IContactList.__identifier__)
         return brains
 
     def get_lists(self):
-        """Get lists user can use
-        """
+        """Get lists user can use"""
         return [b.getObject() for b in self.get_lists_brains()]
 
     def get_editable_lists(self):
-        """Lists user can edit
-        """
-        mtool = ploneapi.portal.get_tool('portal_membership')
-        return [o for o in self.get_lists()
-                if mtool.checkPermission('Modify portal content', o)]
+        """Lists user can edit"""
+        mtool = ploneapi.portal.get_tool("portal_membership")
+        return [o for o in self.get_lists() if mtool.checkPermission("Modify portal content", o)]
 
     def get_my_lists(self):
-        """Lists created by user
-        """
+        """Lists created by user"""
         container = self.get_container()
         if container is None:
             return []
         return [o for o in list(container.values()) if IContactList.providedBy(o)]
 
     def get_container(self):
-        """Get lists container
-        """
+        """Get lists container"""
         user_id = self.user.getId()
         if not user_id:
             return None
 
-        return ploneapi.portal.get_tool('portal_membership').getHomeFolder(user_id)
+        return ploneapi.portal.get_tool("portal_membership").getHomeFolder(user_id)
 
     def get_lists_for_contact(self, contact):
-        """Get lists that contain contact.
-        """
+        """Get lists that contain contact."""
         catalog = getUtility(ICatalog)
         intids = getUtility(IIntIds)
         contact_intid = intids.queryId(contact)
-        query = {'to_id': contact_intid,
-                 'from_attribute': 'contacts'}
-        return [rel.from_object for rel in catalog.findRelations(query)
-                if IContactList.providedBy(rel.from_object)]
+        query = {"to_id": contact_intid, "from_attribute": "contacts"}
+        return [rel.from_object for rel in catalog.findRelations(query) if IContactList.providedBy(rel.from_object)]

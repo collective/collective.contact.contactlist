@@ -22,13 +22,15 @@ class ExportLinkViewlet(ViewletBase):
 
     def render(self):
         url = "%s/@@collective.excelexport" % self.context.absolute_url()
-        title = translate(_(u"Excel export list of contacts"),
-                          context=self.request)
-        icon_url = getMultiAdapter((self.context, self.request), name='iconresolver').url(
-            'mimetype-application/vnd.ms-excel')
+        title = translate(_("Excel export list of contacts"), context=self.request)
+        icon_url = getMultiAdapter((self.context, self.request), name="iconresolver").url(
+            "mimetype-application/vnd.ms-excel"
+        )
         return """<a title="%(title)s" href="%(url)s">
                      <img src="%(icon_url)s" />
                      %(title)s
-                  </a>""" % {'url': url,
-                             'title': title,
-                             'icon_url': icon_url}
+                  </a>""" % {
+            "url": url,
+            "title": title,
+            "icon_url": icon_url,
+        }

@@ -4,9 +4,9 @@ from zope.i18nmessageid import MessageFactory
 
 import logging
 
-log = logging.getLogger('collective.contact.contactlist')
+log = logging.getLogger("collective.contact.contactlist")
 
-_ = MessageFactory('collective.contact.contactlist')
+_ = MessageFactory("collective.contact.contactlist")
 
 
 def initialize(context):

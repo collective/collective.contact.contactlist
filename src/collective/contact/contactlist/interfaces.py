@@ -13,7 +13,7 @@ class IContactList(model.Schema):
     contacts = schema.ContactList(
         title=_("Contacts of the list"),
         required=False,
-        )
+    )
 
 
 class ICollectiveContactContactlistLayer(IDefaultBrowserLayer):
@@ -21,29 +21,22 @@ class ICollectiveContactContactlistLayer(IDefaultBrowserLayer):
 
 
 class IUserLists(Interface):
-    """Adapts user, portal and request to get user list location
-    """
+    """Adapts user, portal and request to get user list location"""
 
     def get_lists_brains(self):
-        """Get brains of lists user can use
-        """
+        """Get brains of lists user can use"""
 
     def get_lists(self):
-        """Get lists user can use
-        """
+        """Get lists user can use"""
 
     def get_editable_lists(self):
-        """Lists user can edit
-        """
+        """Lists user can edit"""
 
     def get_my_lists(self):
-        """Lists created by user
-        """
+        """Lists created by user"""
 
     def get_container(self):
-        """Get lists container
-        """
+        """Get lists container"""
 
     def get_lists_for_contact(self, contact):
-        """Get lists that contain contact.
-        """
+        """Get lists that contain contact."""

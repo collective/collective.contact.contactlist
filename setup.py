@@ -6,20 +6,14 @@ from setuptools import setup
 
 
 long_description = (
-    open('README.rst').read()
-    + '\n' +
-    'Contributors\n'
-    '============\n'
-    + '\n' +
-    open('CONTRIBUTORS.rst').read()
-    + '\n' +
-    open('CHANGES.rst').read()
-    + '\n')
+    open("README.rst").read() + "\n" + "Contributors\n"
+    "============\n" + "\n" + open("CONTRIBUTORS.rst").read() + "\n" + open("CHANGES.rst").read() + "\n"
+)
 
 
 setup(
-    name='collective.contact.contactlist',
-    version='3.0.0.dev0',
+    name="collective.contact.contactlist",
+    version="3.0.0.dev0",
     description="Manage lists of contacts",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -30,41 +24,41 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.13",
     ],
-    keywords='crm',
-    author='Thomas Desvenain',
-    author_email='thomas.desvenain@gmail.com',
-    url='http://pypi.python.org/pypi/collective.contact.contactlist',
-    license='GPL',
-    packages=find_packages('src', exclude=['ez_setup']),
-    package_dir={'': 'src'},
+    keywords="crm",
+    author="Thomas Desvenain",
+    author_email="thomas.desvenain@gmail.com",
+    url="http://pypi.python.org/pypi/collective.contact.contactlist",
+    license="GPL",
+    packages=find_packages("src", exclude=["ez_setup"]),
+    package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
-    python_requires='>=3.10',
+    python_requires=">=3.10",
     install_requires=[
-        'collective.contact.core',
-        'collective.contact.widget',
-        'plone.api',
-        'plone.app.contenttypes',
-        'plone.base',
-        'plone.dexterity',
-        'plone.formwidget.masterselect',
-        'plone.protect',
-        'plone.supermodel',
-        'plone.z3cform',
-        'Products.CMFPlone',
-        'setuptools',
-        'z3c.form',
-        'z3c.relationfield',
-        'zc.relation',
+        "collective.contact.core",
+        "collective.contact.widget",
+        "plone.api",
+        "plone.app.contenttypes",
+        "plone.base",
+        "plone.dexterity",
+        "plone.formwidget.masterselect",
+        "plone.protect",
+        "plone.supermodel",
+        "plone.z3cform",
+        "Products.CMFPlone",
+        "setuptools",
+        "z3c.form",
+        "z3c.relationfield",
+        "zc.relation",
     ],
     extras_require={
-        'test': [
-            'collective.contact.facetednav',
-            'collective.excelexport',
-            'ecreall.helpers.testing',
-            'plone.app.testing',
-            'plone.app.robotframework',
-            'eea.facetednavigation'
+        "test": [
+            "collective.contact.facetednav",
+            "collective.excelexport",
+            "ecreall.helpers.testing",
+            "plone.app.testing",
+            "plone.app.robotframework",
+            "eea.facetednavigation",
         ],
     },
     entry_points="""

@@ -11,19 +11,19 @@ class TestBatchActions(IntegrationTestCase):
     def setUp(self):
         super(TestBatchActions, self).setUp()
         self.directory = self.portal.mydirectory
-        self.request = self.layer['request']
+        self.request = self.layer["request"]
 
     def test_available(self):
-        login(self.portal, 'testuser')
+        login(self.portal, "testuser")
         self.assertTrue(AddToListAction(self.directory, self.request, None, None).available())
         self.assertTrue(ReplaceListAction(self.directory, self.request, None, None).available())
         # without user folder, no list
-        login(self.portal, 'member')
+        login(self.portal, "member")
         self.assertFalse(AddToListAction(self.directory, self.request, None, None).available())
         self.assertFalse(ReplaceListAction(self.directory, self.request, None, None).available())
 
     def test_render(self):
-        login(self.portal, 'testuser')
+        login(self.portal, "testuser")
         html = AddToListAction(self.directory, self.request, None, None).render()
         self.assertIn('id="contact-facetednav-action-addtolist"', html)
         self.assertIn('onclick="contactcontactlist.facetednav_addtolist()"', html)

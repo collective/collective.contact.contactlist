@@ -11,9 +11,9 @@ from plone.app.testing import login
 class TestExportLinkViewlet(IntegrationTestCase):
 
     def test_render(self):
-        login(self.portal, 'testuser')
+        login(self.portal, "testuser")
         contact_list = create_list("Exported", "", [self.portal.mydirectory.armeedeterre])
-        viewlet = ExportLinkViewlet(contact_list, self.layer['request'], None)
+        viewlet = ExportLinkViewlet(contact_list, self.layer["request"], None)
         viewlet.update()
         html = viewlet.render()
         self.assertIn('href="http://nohost/plone/Members/testuser/exported/@@collective.excelexport"', html)
@@ -28,15 +28,15 @@ class TestExportLinkViewlet(IntegrationTestCase):
 class TestContactListDataSource(IntegrationTestCase):
 
     def test_get_filename(self):
-        login(self.portal, 'testuser')
+        login(self.portal, "testuser")
         contact_list = create_list("Exported", "", [])
-        self.assertEqual(ContactListDataSource(contact_list, self.layer['request']).get_filename(), 'exported.xls')
+        self.assertEqual(ContactListDataSource(contact_list, self.layer["request"]).get_filename(), "exported.xls")
 
     def test_get_objects(self):
-        login(self.portal, 'testuser')
+        login(self.portal, "testuser")
         army = self.portal.mydirectory.armeedeterre
         contact_list = create_list("Exported", "", [army.corpsa, army.corpsb])
-        source = ContactListDataSource(contact_list, self.layer['request'])
+        source = ContactListDataSource(contact_list, self.layer["request"])
         self.assertEqual(source.get_objects(), [army.corpsa, army.corpsb])
         # a deleted contact is skipped
         api.content.delete(army.corpsb, check_linkintegrity=False)
