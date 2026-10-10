@@ -13,7 +13,7 @@ ${EXPORT_LINK}  xpath=//a[contains(., "Excel export list of contacts")]
 
 *** Test Cases ***
 The list has an Excel export link
-    Add the contact to a new list  ${ARMY_URL}/corpsa  Exported list
+    Create a list with the contact  testuser  exported-list  Exported list  /plone/mydirectory/armeedeterre/corpsa
     Go to  ${LIST_URL}
     Element attribute value should be  ${EXPORT_LINK}  href  ${LIST_URL}/@@collective.excelexport
     # the icon is not a broken image
@@ -22,7 +22,7 @@ The list has an Excel export link
     Should be true  ${width} > 0
 
 Export the list
-    Add the contact to a new list  ${ARMY_URL}/corpsa  Exported list
+    Create a list with the contact  testuser  exported-list  Exported list  /plone/mydirectory/armeedeterre/corpsa
     Go to  ${LIST_URL}
     ${response}=  Execute async javascript
     ...  var done = arguments[arguments.length - 1];

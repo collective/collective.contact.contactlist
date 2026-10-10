@@ -1,11 +1,16 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="collective.contact.contactlist">
 
   <include file="configure.zcml" />
 
   <include package="ecreall.helpers.testing" />
+  <!-- Plone 4: sources, terms and javascript of the collective.contact.widget widgets,
+       loaded by z3c.autoinclude on a site; replaced by Plone core on Plone 6 -->
+  <include package="plone.formwidget.contenttree"
+           zcml:condition="not-have plone-5" />
 
   <genericsetup:registerProfile
       name="testing"

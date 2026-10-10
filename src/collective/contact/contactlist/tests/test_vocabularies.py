@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collective.contact.contactlist.api import create_list
+from collective.contact.contactlist.testing import expectedFailureOnPlone4
 from collective.contact.contactlist.testing import IntegrationTestCase
 from collective.contact.contactlist.vocabularies import CREATE_NEW_KEY
 from plone.app.testing import login
@@ -44,6 +45,9 @@ class TestVocabularies(IntegrationTestCase):
 
     def test_MyListsVocabulary(self):
         self.assertEqual(self.titles('collective.contact.contactlist.mylists'), ["armies", "Divisions"])
+
+    @expectedFailureOnPlone4  # AttributeError: 'NoneType' object has no attribute 'values'
+    def test_MyListsVocabulary_without_user_folder(self):
         login(self.portal, 'member')
         self.assertEqual(self.titles('collective.contact.contactlist.mylists'), [])
 

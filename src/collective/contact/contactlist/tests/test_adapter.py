@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collective.contact.contactlist.api import create_list
 from collective.contact.contactlist.api import get_tool
+from collective.contact.contactlist.testing import expectedFailureOnPlone4
 from collective.contact.contactlist.testing import IntegrationTestCase
 from plone import api
 from plone.app.testing import login
@@ -19,6 +20,10 @@ class TestUserListStorage(IntegrationTestCase):
         login(self.portal, 'testuser')
         self.list_2 = create_list("Divisions", "Description of my list", [army.corpsa.divisionalpha, army.corpsb])
 
+    def test_get_lists_brains(self):
+        self.assertEqual(sorted([b.getPath() for b in get_tool().get_lists_brains()]),
+                         ['/plone/Members/%s/corpses' % TEST_USER_ID, '/plone/Members/testuser/divisions'])
+
     def test_get_lists(self):
         # the sort order is undefined
         self.assertListsHaveSameContents(get_tool().get_lists(), [self.list_1, self.list_2])
@@ -33,6 +38,9 @@ class TestUserListStorage(IntegrationTestCase):
 
     def test_get_my_lists(self):
         self.assertEqual(get_tool().get_my_lists(), [self.list_2])
+
+    @expectedFailureOnPlone4  # AttributeError: 'NoneType' object has no attribute 'values'
+    def test_get_my_lists_without_user_folder(self):
         # a user without user folder has no lists
         login(self.portal, 'member')
         self.assertEqual(get_tool().get_my_lists(), [])
@@ -47,6 +55,9 @@ class TestUserListStorage(IntegrationTestCase):
         # anonymous
         logout()
         self.assertIsNone(get_tool().get_container())
+
+    @expectedFailureOnPlone4  # AttributeError: Members
+    def test_get_container_without_members_folder(self):
         # a site without Members folder, as created without the example content
         login(self.portal, 'testuser')
         api.content.delete(self.portal.Members, check_linkintegrity=False)

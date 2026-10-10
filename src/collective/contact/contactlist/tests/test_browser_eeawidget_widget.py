@@ -2,6 +2,7 @@
 from collective.contact.contactlist.api import create_list
 from collective.contact.contactlist.browser.eeawidget.widget import Widget
 from collective.contact.contactlist.testing import IntegrationTestCase
+from eea.facetednavigation.widgets.storage import Criterion
 from plone import api
 from plone.app.testing import login
 from plone.uuid.interfaces import IUUID
@@ -33,6 +34,22 @@ class TestWidget(IntegrationTestCase):
         self.army = self.portal.mydirectory.armeedeterre
         self.list_1 = create_list("Corpses", "Description of my list", [self.army.corpsa, self.army.corpsb])
         self.list_2 = create_list("Corpses", "Description of my list", [self.army, self.army.corpsb])
+
+    def test_updateWidgets(self):
+        # edit form of the criterion: a vocabulary of lists, the UID index
+        widget = Widget(self.portal, self.layer['request'], data=Criterion(widget='contactlist', _cid_=u'lists'))
+        widget.update()
+        group = [g for g in widget.groups if g.label == u'default'][0]
+        self.assertEqual(group.fields['vocabulary'].field.vocabularyName,
+                         u'collective.contact.contactlist.vocabularies')
+        self.assertTrue(group.fields['index'].field.readonly)
+
+    def test_update(self):
+        widget = Widget(self.portal, self.layer['request'], data=Criterion(widget='contactlist', _cid_=u'lists'))
+        widget.update()
+        group = [g for g in widget.groups if g.label == u'default'][0]
+        self.assertEqual(group.widgets['vocabulary'].value, ['collective.contact.contactlist.lists'])
+        self.assertEqual(group.widgets['index'].value, ['UID'])
 
     def test_query(self):
         army = self.army

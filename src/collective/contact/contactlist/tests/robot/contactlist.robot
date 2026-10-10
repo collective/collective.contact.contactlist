@@ -1,13 +1,12 @@
 *** Settings ***
-Resource  plone/app/robotframework/selenium.robot
-Resource  plone/app/robotframework/keywords.robot
-Library  Remote  ${PLONE_URL}/RobotRemote
+Documentation  Package keywords, built on the Plone UI keywords of ui_plone${PLONE_MAJOR}.robot
+...            (PLONE_MAJOR is set by test_robot.py).
+Resource  ui_plone${PLONE_MAJOR}.robot
 
 
 *** Variables ***
 ${DIRECTORY_URL}  ${PLONE_URL}/mydirectory
 ${ARMY_URL}  ${DIRECTORY_URL}/armeedeterre
-${MODAL}  css=.modal-dialog
 
 
 *** Keywords ***
@@ -16,33 +15,23 @@ Log in as manager testuser
     Enable autologin as  Manager
     Set autologin username  testuser
 
-Log in with the login form
-    [Documentation]  a real login creates the user folder
-    [Arguments]  ${username}  ${password}
-    Disable autologin
-    Go to  ${PLONE_URL}/login
-    Input text  css=#__ac_name  ${username}
-    Input password  css=#__ac_password  ${password}
-    Click button  css=#buttons-login
-    Wait until page contains element  css=#personaltools-menulink
-
 Create an empty list
     [Arguments]  ${user}  ${id}  ${title}
     Create content  type=contact_list  container=/plone/Members/${user}  id=${id}  title=${title}
 
+Create a list with the contact
+    [Documentation]  without the "Add to list" action, for the scenarios of other features
+    [Arguments]  ${user}  ${id}  ${title}  ${contact_path}
+    ${uid}=  Create content  type=contact_list  container=/plone/Members/${user}  id=${id}  title=${title}
+    ${contact_uid}=  Path to uid  ${contact_path}
+    Set field value  ${uid}  contacts  ['${contact_uid}']  references
+
 Open the "Add to list" modal
     [Arguments]  ${contact_url}
     Go to  ${contact_url}
-    Click element  css=#plone-contentmenu-actions > a
-    Wait until element is visible  css=#plone-contentmenu-actions-contactlist-addtolist
-    Click element  css=#plone-contentmenu-actions-contactlist-addtolist
+    Click the content action  contactlist-addtolist
+    The modal is open
     Wait until element is visible  ${MODAL} #form-widgets-contact_list
-
-Save the modal
-    Click button  css=.modal-footer #form-buttons-save
-
-The modal is closed
-    Wait until page does not contain element  ${MODAL}
 
 Add the contact to a new list
     [Arguments]  ${contact_url}  ${title}

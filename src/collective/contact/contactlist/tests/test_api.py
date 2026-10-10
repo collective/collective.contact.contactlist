@@ -9,6 +9,9 @@ from collective.contact.contactlist.testing import IntegrationTestCase
 from plone.app.testing import login
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
+from zope.testing.loggingsupport import InstalledHandler
+
+import logging
 
 # TODO: tests should not depend on collective.contact.core test data...
 
@@ -35,8 +38,13 @@ class TestApi(IntegrationTestCase):
     def test_update_list(self):
         army = self.directory.armeedeterre
         contact_list = create_list("Corpses", "", [army.corpsa])
-        with self.assertLogs('collective.contact.contactlist', level='WARNING'):
+        # deprecation warning (assertLogs is Python 3 only)
+        handler = InstalledHandler('collective.contact.contactlist', level=logging.WARNING)
+        try:
             self.assertEqual(update_list(contact_list, [army.corpsa, army.corpsb]), [army.corpsb])
+        finally:
+            handler.uninstall()
+        self.assertEqual([r.levelname for r in handler.records], ['WARNING'])
         self.assertListsHaveSameContents(get_contacts(contact_list), [army.corpsa, army.corpsb])
 
     def test_extend_list(self):

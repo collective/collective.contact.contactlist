@@ -57,6 +57,7 @@ Add the selected contacts to a new list
     Select the contact  /plone/mydirectory/armeedeterre/corpsa
     Select the contact  /plone/mydirectory/armeedeterre/corpsb
     Click button  ${ADD_TO_LIST}
+    The modal is open
     Wait until element is visible  ${MODAL} #form-widgets-title
     Page should contain element  ${MODAL} input[type=hidden][value="/plone/mydirectory/armeedeterre/corpsa"]
     Page should contain element  ${MODAL} input[type=hidden][value="/plone/mydirectory/armeedeterre/corpsb"]
@@ -64,17 +65,18 @@ Add the selected contacts to a new list
     Save the modal
     The modal is closed
     # no reload: the message is shown in the batch actions
-    # (Plone 6: eea.facetednavigation keeps the query in the URL hash)
+    # (eea.facetednavigation keeps the query in the URL hash)
     Location should contain  ${DIRECTORY_URL}
     Wait until element contains  ${BATCH_ACTIONS}  New list added with 2 contact(s) : Faceted list
     The list contains  ${PLONE_URL}/Members/testuser/faceted-list  Corps A  Corps B
 
 Replace the list checked in the filter
-    Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
+    Create a list with the contact  testuser  faceted-list  Faceted list  /plone/mydirectory/armeedeterre/corpsa
     Go to the faceted directory
     Check the list in the "Contact lists" filter  /plone/Members/testuser/faceted-list
     Select the contact  /plone/mydirectory/armeedeterre/corpsa
     Click button  ${REPLACE_LIST}
+    The modal is open
     Wait until element is visible  ${MODAL} #form-widgets-contact_list
     ${uid}=  Path to uid  /plone/Members/testuser/faceted-list
     List selection should be  ${MODAL} #form-widgets-contact_list  ${uid}
@@ -85,11 +87,13 @@ Replace the list checked in the filter
 Add the selected contacts to a list of the filter
     [Documentation]  the "Contact lists" filter only shows the lists that existed when the page was loaded:
     ...              their counts are updated
-    Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
+    Create a list with the contact  testuser  faceted-list  Faceted list  /plone/mydirectory/armeedeterre/corpsa
     Go to the faceted directory
-    Element should contain  ${LISTS_WIDGET}  Faceted list (1)
+    # the counts are loaded after the results
+    Wait until element contains  ${LISTS_WIDGET}  Faceted list (1)
     Select the contact  /plone/mydirectory/armeedeterre/corpsb
     Click button  ${ADD_TO_LIST}
+    The modal is open
     Wait until element is visible  ${MODAL} #form-widgets-contact_list
     Select from list by label  ${MODAL} #form-widgets-contact_list  Faceted list
     Save the modal
@@ -98,9 +102,9 @@ Add the selected contacts to a list of the filter
     Wait until element contains  ${LISTS_WIDGET}  Faceted list (2)
 
 Filter the contacts by list
-    Add the contact to a new list  ${ARMY_URL}/corpsa  Faceted list
+    Create a list with the contact  testuser  faceted-list  Faceted list  /plone/mydirectory/armeedeterre/corpsa
     Go to the faceted directory
-    Element should contain  ${LISTS_WIDGET}  Faceted list (1)
+    Wait until element contains  ${LISTS_WIDGET}  Faceted list (1)
     Check the list in the "Contact lists" filter  /plone/Members/testuser/faceted-list
     Element should contain  css=.eea-preview-items  Corps A
     Element should not contain  css=.eea-preview-items  Corps B

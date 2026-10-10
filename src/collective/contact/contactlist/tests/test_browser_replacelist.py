@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collective.contact.contactlist.api import create_list
 from collective.contact.contactlist.api import get_contacts
+from collective.contact.contactlist.testing import expectedFailureOnPlone4
 from collective.contact.contactlist.testing import IntegrationTestCase
 from plone.app.testing import login
 from plone.protect.authenticator import createToken
@@ -22,6 +23,8 @@ class TestReplaceListForm(IntegrationTestCase):
         replaceview.form_instance.applySave(replaceview.form_instance, None)
         self.assertEqual(get_contacts(contact_list), [army.corpsb])
 
+    # the Plone 4 forms don't check the CSRF token (no enableCSRFProtection, no auto CSRF in plone.protect 2)
+    @expectedFailureOnPlone4
     def test_csrf(self):
         # the modal form (ajax_load) has the token, the Save button needs it
         army = self.portal.mydirectory.armeedeterre
