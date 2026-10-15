@@ -37,7 +37,7 @@ class ReplaceListForm(form.Form):
     enableCSRFProtection = True
 
     def updateWidgets(self):
-        super(ReplaceListForm, self).updateWidgets()
+        super().updateWidgets()
         if "ajax_load" in self.request:
             self.widgets["contacts"].mode = HIDDEN_MODE
 
@@ -69,5 +69,8 @@ class ReplaceListForm(form.Form):
 replace_list = wrap_form(
     ReplaceListForm,
     label=_("Replace list contacts"),
-    description=_("help_replace_list", default="Replace contacts of selected list with selected contacts"),
+    description=_(
+        "help_replace_list",
+        default="Replace contacts of selected list with selected contacts",
+    ),
 )

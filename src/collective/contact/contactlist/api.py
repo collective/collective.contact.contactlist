@@ -27,7 +27,9 @@ def create_list(title, description, contacts, list_type="contact_list", **kwargs
     """
     container = get_tool().get_container()
     if not container:
-        raise ValueError("User has no list container : %s", ploneapi.user.get_current().getId())
+        raise ValueError(
+            "User has no list container : %s", ploneapi.user.get_current().getId()
+        )
     intids = getUtility(IIntIds)
     contact_list = ploneapi.content.create(
         container=container,
@@ -35,7 +37,7 @@ def create_list(title, description, contacts, list_type="contact_list", **kwargs
         title=title,
         description=description,
         contacts=[RelationValue(intids.getId(obj)) for obj in contacts],
-        **kwargs
+        **kwargs,
     )
     return contact_list
 
@@ -100,14 +102,14 @@ def get_contacts(*contact_lists, **kwargs):
         for contact_list in contact_lists:
             if not contact_list.contacts:
                 continue
-            contacts |= set([c.to_object for c in contact_list.contacts])
+            contacts |= {c.to_object for c in contact_list.contacts}
         return list(contacts)
     elif operator == "and":
-        contacts = set([c.to_object for c in contact_lists[0].contacts])
+        contacts = {c.to_object for c in contact_lists[0].contacts}
         for contact_list in contact_lists[1:]:
             if not contact_list.contacts or not contacts:
                 return []
-            contacts &= set([c.to_object for c in contact_list.contacts])
+            contacts &= {c.to_object for c in contact_list.contacts}
         return list(contacts)
     else:
         raise ValueError()

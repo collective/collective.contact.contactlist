@@ -24,7 +24,7 @@ contactcontactlist._facetednav_open_modal = function (view_name, select_checked_
         var modal = link.data('pattern-plone-modal').$modal;
         contactcontactlist.populate_hidden_field(
             modal.find('#formfield-form-widgets-contacts'),
-            contactfacetednav.contacts.selection_pathes()
+            contactfacetednav.contacts.selection_paths()
         );
         // in the replace list modal, select the list checked in the "Contact lists" filter
         if (select_checked_list) {
@@ -45,8 +45,8 @@ contactcontactlist._facetednav_open_modal = function (view_name, select_checked_
     link.patPloneModal().trigger('click');
 };
 
-contactcontactlist.populate_hidden_field = function (field, pathes) {
-    jQuery.each(pathes, function (num, path) {
+contactcontactlist.populate_hidden_field = function (field, paths) {
+    jQuery.each(paths, function (num, path) {
         jQuery('<input type="hidden" class="hidden-widget" name="form.widgets.contacts:list" />')
             .attr('value', path)
             .attr('originalvalue', path)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.contact.contactlist.setuphandlers import post_install
 from collective.contact.contactlist.testing import IntegrationTestCase
 from collective.contact.contactlist.testing import PLONE_MAJOR

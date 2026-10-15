@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.contact.contactlist.api import create_list
 from collective.contact.contactlist.api import get_contacts
 from collective.contact.contactlist.testing import expectedFailureOnPlone4
@@ -39,7 +38,9 @@ class TestAddToListForm(IntegrationTestCase):
 
     def test_checkNewListTitle(self):
         login(self.portal, "testuser")
-        self.assertEqual(self.extract_errors(CREATE_NEW_KEY), ["Title of the new list is required"])
+        self.assertEqual(
+            self.extract_errors(CREATE_NEW_KEY), ["Title of the new list is required"]
+        )
         # an existing list doesn't need a title
         self.assertEqual(self.extract_errors(create_list("Existing", "", []).UID()), [])
 
@@ -52,7 +53,9 @@ class TestAddToListForm(IntegrationTestCase):
         addview.request["form.widgets.contact_list"] = CREATE_NEW_KEY
         addview.request["form.widgets.title"] = "My new list"
         addview.request["form.widgets.description"] = "My new list"
-        addview.request["form.widgets.contacts"] = ["/plone/mydirectory/armeedeterre/corpsa"]
+        addview.request["form.widgets.contacts"] = [
+            "/plone/mydirectory/armeedeterre/corpsa"
+        ]
         addview.update()
         addview.form_instance.applySave(addview.form_instance, None)
         self.assertIn("my-new-list", portal.Members.testuser)
@@ -60,10 +63,12 @@ class TestAddToListForm(IntegrationTestCase):
         self.assertEqual(get_contacts(new_list), [army.corpsa])
 
         addview.request["form.widgets.contact_list"] = new_list.UID()
-        addview.request["form.widgets.contacts"] = ["/plone/mydirectory/armeedeterre/corpsb"]
+        addview.request["form.widgets.contacts"] = [
+            "/plone/mydirectory/armeedeterre/corpsb"
+        ]
         addview.update()
         addview.form_instance.applySave(addview.form_instance, None)
-        self.assertEqual(set(get_contacts(new_list)), set([army.corpsa, army.corpsb]))
+        self.assertEqual(set(get_contacts(new_list)), {army.corpsa, army.corpsb})
 
     # the Plone 4 forms don't check the CSRF token (no enableCSRFProtection, no auto CSRF in plone.protect 2)
     @expectedFailureOnPlone4
@@ -102,4 +107,8 @@ class TestCanAddToList(IntegrationTestCase):
         portal = self.portal
         login(portal, "testuser")
         self.assertFalse(portal.restrictedTraverse("@@contactlist.can-add-to-list")())
-        self.assertTrue(portal.mydirectory.armeedeterre.restrictedTraverse("@@contactlist.can-add-to-list")())
+        self.assertTrue(
+            portal.mydirectory.armeedeterre.restrictedTraverse(
+                "@@contactlist.can-add-to-list"
+            )()
+        )

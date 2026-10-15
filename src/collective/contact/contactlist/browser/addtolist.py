@@ -69,12 +69,12 @@ class AddToListForm(form.Form):
     allow_prefill_from_GET_request = True
 
     def updateWidgets(self):
-        super(AddToListForm, self).updateWidgets()
+        super().updateWidgets()
         if "ajax_load" in self.request:
             self.widgets["contacts"].mode = HIDDEN_MODE
 
     def extractData(self, setErrors=True):
-        data, errors = super(AddToListForm, self).extractData(setErrors=setErrors)
+        data, errors = super().extractData(setErrors=setErrors)
         data, errors = self.checkNewListTitle(data, errors)
         return data, errors
 
@@ -118,7 +118,12 @@ class AddToListForm(form.Form):
 
     def addError(self, errors, fieldname, message):
         error = ErrorViewSnippet(
-            InvalidValue(fieldname), self.request, self.widgets[fieldname], self.fields[fieldname].field, self, None
+            InvalidValue(fieldname),
+            self.request,
+            self.widgets[fieldname],
+            self.fields[fieldname].field,
+            self,
+            None,
         )
         error.message = message
         errors += (error,)

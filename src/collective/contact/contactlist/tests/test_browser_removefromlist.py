@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.contact.contactlist.api import create_list
 from collective.contact.contactlist.api import get_contacts
 from collective.contact.contactlist.testing import IntegrationTestCase

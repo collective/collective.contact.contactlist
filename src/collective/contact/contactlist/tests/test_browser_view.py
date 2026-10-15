@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.contact.contactlist.testing import IntegrationTestCase
 from plone.app.testing import login
 

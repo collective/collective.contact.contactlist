@@ -1,5 +1,4 @@
-""" Select widget
-"""
+"""Select widget"""
 
 from collective.contact.contactlist.api import get_contacts
 from eea.facetednavigation import _
@@ -31,7 +30,7 @@ class Widget(CheckboxWidget):
     css_class = "faceted-checkboxes-widget faceted-contactlist-widget"
 
     def updateWidgets(self, prefix=None):
-        super(Widget, self).updateWidgets(prefix=prefix)
+        super().updateWidgets(prefix=prefix)
         group = [g for g in self.groups if g.label == "default"][0]
         voc_fld = group.fields["vocabulary"]
         voc_fld.field = copy.copy(voc_fld.field)
@@ -41,7 +40,7 @@ class Widget(CheckboxWidget):
         ind_fld.field.readonly = True
 
     def update(self):
-        super(Widget, self).update()
+        super().update()
         group = [g for g in self.groups if g.label == "default"][0]
         voc_wd = group.widgets["vocabulary"]
         voc_wd.value = ["collective.contact.contactlist.lists"]
@@ -64,7 +63,10 @@ class Widget(CheckboxWidget):
             return query
 
         contact_lists = api.portal.get_tool("portal_catalog")(UID=value)
-        contacts = get_contacts(*[c.getObject() for c in contact_lists], operator=self.data.get("operator", "or"))
+        contacts = get_contacts(
+            *[c.getObject() for c in contact_lists],
+            operator=self.data.get("operator", "or"),
+        )
         contact_uids = [IUUID(c) for c in contacts]
         query[index] = contact_uids
         return query

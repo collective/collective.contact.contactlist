@@ -12,7 +12,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 
 @implementer(IUserLists)
-class UserListStorage(object):
+class UserListStorage:
     # (Interface, Interface, Interface) would be used by the ++add++ traverser as add view
     adapts(Interface, IPloneSiteRoot, IBrowserRequest)
 
@@ -34,7 +34,11 @@ class UserListStorage(object):
     def get_editable_lists(self):
         """Lists user can edit"""
         mtool = ploneapi.portal.get_tool("portal_membership")
-        return [o for o in self.get_lists() if mtool.checkPermission("Modify portal content", o)]
+        return [
+            o
+            for o in self.get_lists()
+            if mtool.checkPermission("Modify portal content", o)
+        ]
 
     def get_my_lists(self):
         """Lists created by user"""
@@ -57,4 +61,8 @@ class UserListStorage(object):
         intids = getUtility(IIntIds)
         contact_intid = intids.queryId(contact)
         query = {"to_id": contact_intid, "from_attribute": "contacts"}
-        return [rel.from_object for rel in catalog.findRelations(query) if IContactList.providedBy(rel.from_object)]
+        return [
+            rel.from_object
+            for rel in catalog.findRelations(query)
+            if IContactList.providedBy(rel.from_object)
+        ]

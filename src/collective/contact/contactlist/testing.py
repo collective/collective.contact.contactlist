@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Base module for unittesting (Plone 4.3 and Plone 6)."""
 
 from collective.contact.facetednav.interfaces import IActionsEnabled
@@ -54,7 +53,9 @@ except ImportError:
 PLONE_MAJOR = getFSVersionTuple()[0]
 
 # a test pinning a bug of the Plone 4 code, fixed by the Plone 6 migration (see MIGRATION.md)
-expectedFailureOnPlone4 = unittest.expectedFailure if PLONE_MAJOR < 5 else (lambda func: func)
+expectedFailureOnPlone4 = (
+    unittest.expectedFailure if PLONE_MAJOR < 5 else (lambda func: func)
+)
 
 
 class CollectiveContactContactlistLayer(PloneSandboxLayer):
@@ -73,7 +74,9 @@ class CollectiveContactContactlistLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
-        setLocal("request", portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
+        setLocal(
+            "request", portal.REQUEST
+        )  # collective.fingerpointing (imio.fpaudit) needs a request
         # Install into Plone site using portal_setup
         applyProfile(portal, "collective.contact.core:testing")
         # insert some test data
@@ -94,7 +97,9 @@ class CollectiveContactContactlistLayer(PloneSandboxLayer):
             properties={"fullname": "Test user"},
         )
         # plain member without user folder
-        api.user.create(email="member@example.com", username="member", password="member123")
+        api.user.create(
+            email="member@example.com", username="member", password="member123"
+        )
         login(portal, TEST_USER_NAME)
         folder_id = portal.invokeFactory("Folder", "folder")
         portal[folder_id].reindexObject()
@@ -133,19 +138,22 @@ class CSRFSafeContent(Content):
         """Set field value with a specific type"""
         if IDisableCSRFProtection is not None:
             alsoProvides(getRequest(), IDisableCSRFProtection)
-        return super(CSRFSafeContent, self).set_field_value(uid, field, value, field_type)
+        return super().set_field_value(uid, field, value, field_type)
 
 
 REMOTE_LIBRARY_FIXTURE = RemoteLibraryLayer(
     bases=(PLONE_FIXTURE,),
     libraries=tuple(
-        CSRFSafeContent if lib is Content else lib for lib in REMOTE_LIBRARY_BUNDLE_FIXTURE.libraryBases[1:]
+        CSRFSafeContent if lib is Content else lib
+        for lib in REMOTE_LIBRARY_BUNDLE_FIXTURE.libraryBases[1:]
     ),
     name="RemoteLibraryBundle:RobotRemote",
 )
 
 
-ACCEPTANCE = FunctionalTesting(bases=(FIXTURE, REMOTE_LIBRARY_FIXTURE, SERVER_FIXTURE), name="ACCEPTANCE")
+ACCEPTANCE = FunctionalTesting(
+    bases=(FIXTURE, REMOTE_LIBRARY_FIXTURE, SERVER_FIXTURE), name="ACCEPTANCE"
+)
 
 
 class CollectiveContactContactlistAddonsLayer(PloneSandboxLayer):
@@ -161,13 +169,20 @@ class CollectiveContactContactlistAddonsLayer(PloneSandboxLayer):
         self.loadZCML(package=collective.excelexport)
 
     def setUpPloneSite(self, portal):
-        setLocal("request", portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
+        setLocal(
+            "request", portal.REQUEST
+        )  # collective.fingerpointing (imio.fpaudit) needs a request
         applyProfile(portal, "collective.contact.facetednav:default")
         directory = portal.mydirectory
         # smart facets hide the criteria when the results have no pagination
         alsoProvides(directory, IFacetedNavigable, IActionsEnabled, IDisableSmartFacets)
-        with open(os.path.join(os.path.dirname(__file__), "tests", "contacts-faceted.xml"), "rb") as xml:
-            directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(import_file=xml)
+        with open(
+            os.path.join(os.path.dirname(__file__), "tests", "contacts-faceted.xml"),
+            "rb",
+        ) as xml:
+            directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(
+                import_file=xml
+            )
         directory.reindexObject()
         transaction.commit()
         clearRequest()
@@ -177,7 +192,8 @@ ADDONS_FIXTURE = CollectiveContactContactlistAddonsLayer(name="ADDONS_FIXTURE")
 
 
 ADDONS_ACCEPTANCE = FunctionalTesting(
-    bases=(ADDONS_FIXTURE, REMOTE_LIBRARY_FIXTURE, SERVER_FIXTURE), name="ADDONS_ACCEPTANCE"
+    bases=(ADDONS_FIXTURE, REMOTE_LIBRARY_FIXTURE, SERVER_FIXTURE),
+    name="ADDONS_ACCEPTANCE",
 )
 
 
@@ -187,12 +203,13 @@ class IntegrationTestCase(unittest.TestCase):
     layer = INTEGRATION
 
     def setUp(self):
-        super(IntegrationTestCase, self).setUp()
+        super().setUp()
         self.portal = self.layer["portal"]
 
     def assertListsHaveSameContents(self, contents_1, contents_2):
         self.assertEqual(
-            sorted([c.getPhysicalPath() for c in contents_1]), sorted([c.getPhysicalPath() for c in contents_2])
+            sorted([c.getPhysicalPath() for c in contents_1]),
+            sorted([c.getPhysicalPath() for c in contents_2]),
         )
 
 

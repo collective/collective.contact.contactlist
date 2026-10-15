@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 """Robot suites of tests/robot, run with the layer of their file name.
 
 ROBOT_PLONE_MAJOR (4 or 6) selects the UI keywords: robotsuite passes the
 ROBOT_* environment variables to the suites as robot variables.
 """
+
 from ..testing import ACCEPTANCE
 from ..testing import ADDONS_ACCEPTANCE
 from ..testing import PLONE_MAJOR
@@ -34,6 +34,8 @@ def test_suite():
             tests = robotsuite.RobotTestSuite(os.path.join("robot", name), **OPTIONS)
             if PLONE_MAJOR < 5:
                 # behaviour of the Plone 6 code only (robotsuite has no tag filter)
-                tests = unittest.TestSuite([test for test in tests if "plone6-only" not in test._tags])
+                tests = unittest.TestSuite(
+                    [test for test in tests if "plone6-only" not in test._tags]
+                )
             suite.addTests([layered(tests, layer=SUITE_LAYERS.get(name, ACCEPTANCE))])
     return suite

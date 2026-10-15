@@ -29,6 +29,8 @@ Changelog
 - Restructured the unit tests (one test module per module), added robot tests
   (`make robot`, `make robot-server`).
   [chris-adam]
+- Added plone.meta configuration (tox, pre-commit, GitHub Actions).
+  [chris-adam]
 
 
 2.0 (2019-04-24)

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Module where all interfaces, events and exceptions live."""
+
 from collective.contact.contactlist import _
 from collective.contact.widget import schema
 from plone.supermodel import model

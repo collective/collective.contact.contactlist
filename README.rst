@@ -1,7 +1,5 @@
-.. image:: https://github.com/collective/collective.contact.contactlist/actions/workflows/main.yml/badge.svg
-    :target: https://github.com/collective/collective.contact.contactlist/actions/workflows/main.yml
-.. image:: https://coveralls.io/repos/github/collective/collective.contact.contactlist/badge.svg
-    :target: https://coveralls.io/github/collective/collective.contact.contactlist
+.. image:: https://github.com/collective/collective.contact.contactlist/actions/workflows/meta.yml/badge.svg?branch=master
+    :target: https://github.com/collective/collective.contact.contactlist/actions/workflows/meta.yml
 
 ==========================================================================
 collective.contact.contactlist
@@ -66,7 +64,7 @@ If you have collective.contact.facetednav installed,
 if you have enabled contact selection on your faceted navigation
 you can batch select contacts and add them to lists
 
-You have a new widget "contacts list", wich display your lists.
+You have a new widget "contacts list", which display your lists.
 It filters your results on the contents of the lists you have selected.
 
 Compatible with eea.facetednav > 10
@@ -89,6 +87,6 @@ you can filter choices of a ContactChoice (or ContactList) field on the contacts
         )
 
 This works like ContactSourceBinder from collective.contact.widget, but it also gets a
-countact_lists_query parameter, wich is a catalog query dictionnary. Contacts displayed by formwidget
+countact_lists_query parameter, which is a catalog query dictionary. Contacts displayed by formwidget
 query are filtered on the union or intersection (depending on contact_lists_operator) of the lists we get using this query.
 

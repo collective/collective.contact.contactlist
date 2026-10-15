@@ -1,11 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <registry>
 
   <!-- only used at click time (contactfacetednav, Faceted, plone-modal): no dependency on eea.facetednavigation's
        bundles, which may not be installed (a missing dependency drops the bundle) -->
-  <records prefix="plone.bundles/collective-contact-contactlist"
-           interface="plone.base.interfaces.IBundleRegistry">
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/collective-contact-contactlist"
+  >
     <value key="enabled">True</value>
-    <value key="csscompilation"></value>
+    <value key="csscompilation" />
     <value key="jscompilation">++resource++collective.contact.contactlist/javascript.js</value>
     <value key="depends">plone</value>
     <value key="load_async">False</value>

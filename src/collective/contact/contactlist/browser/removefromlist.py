@@ -19,7 +19,10 @@ class RemoveFromList(BrowserView):
             _(
                 "msg_removed_from_list",
                 default="${num} contacts have been removed from list ${title}",
-                mapping={"num": len(old_contacts) - len(new_contacts), "title": self.context.Title()},
+                mapping={
+                    "num": len(old_contacts) - len(new_contacts),
+                    "title": self.context.Title(),
+                },
             )
         )
         self.request.response.redirect(self.context.absolute_url())

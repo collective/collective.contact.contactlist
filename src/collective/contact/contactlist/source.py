@@ -8,31 +8,41 @@ from plone import api as ploneapi
 class ContactListSource(ContactSource):
     contact_lists_query = None
 
-    def __init__(self, context, contact_lists_query=None, contact_lists_operator=None, **kwargs):
+    def __init__(
+        self, context, contact_lists_query=None, contact_lists_operator=None, **kwargs
+    ):
         self.contact_lists_query = contact_lists_query
         self.contact_lists_operator = contact_lists_operator
         ContactSource.__init__(self, context, **kwargs)
 
     def search(self, query, **kwargs):
         # get contact lists
-        contact_lists = [cl.getObject() for cl in ploneapi.content.find(**self.contact_lists_query)]
+        contact_lists = [
+            cl.getObject() for cl in ploneapi.content.find(**self.contact_lists_query)
+        ]
         if len(contact_lists) == 0:
             return []
 
         # get contacts from lists
-        contact_lists_contacts = api.get_contacts(*contact_lists, operator=self.contact_lists_operator)
+        contact_lists_contacts = api.get_contacts(
+            *contact_lists, operator=self.contact_lists_operator
+        )
         if len(contact_lists_contacts) == 0:
             return []
 
-        lists_contacts_tokens = ["/".join(contact.getPhysicalPath()) for contact in contact_lists_contacts]
+        lists_contacts_tokens = [
+            "/".join(contact.getPhysicalPath()) for contact in contact_lists_contacts
+        ]
 
         # get query_results
         if len(self.selectable_filter.criteria) == len(query) == 0:
             return (self.getTermByToken(token) for token in lists_contacts_tokens)
 
-        contacts_query_result = list(super(ContactListSource, self).search(query, **kwargs))
+        contacts_query_result = list(super().search(query, **kwargs))
         return (
-            query_contact for query_contact in contacts_query_result if query_contact.token in lists_contacts_tokens
+            query_contact
+            for query_contact in contacts_query_result
+            if query_contact.token in lists_contacts_tokens
         )
 
 

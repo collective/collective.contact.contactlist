@@ -1,4 +1,5 @@
 graft src/collective
 graft docs
-include *.cfg *.rst *.in *.py
+include *.cfg *.rst *.in *.py *.ini .coveragerc Makefile requirements*.txt
+exclude *-mxdev.txt
 global-exclude *.pyc
