@@ -22,6 +22,10 @@ report.html
 
 [tox]
 use_mxdev = true
+# robot suites written for Firefox (buildout geckodriver); Chrome intercepts their clicks
+test_environment_variables = """
+    ROBOT_BROWSER=headlessfirefox
+"""
 test_matrix = {"6.2" = ["*"]}
 test_deps_additional = """
 collective.contact.core @ file://{toxinidir}/sources/collective.contact.core
@@ -33,4 +37,5 @@ collective.contact.core @ file://{toxinidir}/sources/collective.contact.core
 """
 
 [pyproject]
+codespell_ignores = "pathes"
 dependencies_ignores = "['collective.contact.facetednav', 'collective.excelexport', 'collective.js.backbone', 'eea.facetednavigation', 'plone.formwidget.contenttree']"

@@ -37,7 +37,7 @@ target-version = ["py310"]
 ##
 
 [tool.codespell]
-ignore-words-list = "discreet,assertin,thet,"
+ignore-words-list = "discreet,assertin,thet,pathes"
 skip = "*.po,"
 ##
 # Add extra configuration options in .meta.toml:
