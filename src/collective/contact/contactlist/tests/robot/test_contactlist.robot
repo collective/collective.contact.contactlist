@@ -10,36 +10,27 @@ ${CORPSA_TOKEN}  /plone/mydirectory/armeedeterre/corpsa
 ${CONTACTS_FIELD}  css=#formfield-form-widgets-contacts
 
 
-*** Keywords ***
-Select a contact with the autocomplete
-    [Arguments]  ${search}  ${token}
-    Input text  css=#form-widgets-contacts-widgets-query  ${search}
-    Wait until element is visible  css=li.search-result[data-token="${token}"]
-    Click element  css=li.search-result[data-token="${token}"]
-    Wait until page contains element  ${CONTACTS_FIELD} input[type=checkbox][value="${token}"]
-
-
 *** Test Cases ***
 The Add menu shows the contact list icon
     Go to  ${PLONE_URL}/Members/testuser
-    Click element  css=#plone-contentmenu-factories > a
+    Open the add menu
     Wait until element is visible  css=#plone-contentmenu-factories a#contact_list
-    Page should contain element  css=#plone-contentmenu-factories a#contact_list svg.bi-person-lines-fill
+    The add menu item has the icon  contact_list  ${CONTACT_LIST_ICON}
 
 Add a list with the contacts autocomplete
     Go to  ${PLONE_URL}/Members/testuser/++add++contact_list
     Input text  css=#form-widgets-IBasic-title  Autocomplete list
-    Select a contact with the autocomplete  corps  ${CORPSA_TOKEN}
+    Select in the contact autocomplete  contacts  corps  ${CORPSA_TOKEN}  Corps A
     Click button  css=#form-buttons-save
     Wait until page contains  Item created
     Location should be  ${PLONE_URL}/Members/testuser/autocomplete-list/view
     Element should contain  css=#content-core  Corps A
 
 Remove a contact while editing a list
-    Add the contact to a new list  ${ARMY_URL}/corpsa  Edited list
+    Create a list with the contact  testuser  edited-list  Edited list  ${CORPSA_TOKEN}
     Go to  ${PLONE_URL}/Members/testuser/edited-list/edit
     Checkbox should be selected  ${CONTACTS_FIELD} input[value="${CORPSA_TOKEN}"]
-    Select a contact with the autocomplete  corps  /plone/mydirectory/armeedeterre/corpsb
+    Select in the contact autocomplete  contacts  corps  /plone/mydirectory/armeedeterre/corpsb  Corps B
     Unselect checkbox  ${CONTACTS_FIELD} input[value="${CORPSA_TOKEN}"]
     Click button  css=#form-buttons-save
     Wait until page contains  Changes saved

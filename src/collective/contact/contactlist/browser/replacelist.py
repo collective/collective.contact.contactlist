@@ -13,7 +13,7 @@ from zope import schema
 from zope.i18nmessageid import MessageFactory
 from zope.interface import Interface
 
-PMF = MessageFactory('plone')
+PMF = MessageFactory("plone")
 
 
 class IReplaceList(Interface):
@@ -21,7 +21,7 @@ class IReplaceList(Interface):
     contact_list = schema.Choice(
         required=True,
         title=_("List to update"),
-        vocabulary='collective.contact.contactlist.editablelists',
+        vocabulary="collective.contact.contactlist.editablelists",
     )
 
     contacts = contactsschema.ContactList()
@@ -32,39 +32,45 @@ class ReplaceListForm(form.Form):
     fields = field.Fields(IReplaceList)
     ignoreContext = True
     ignoreRequest = False
-    method = 'POST'
+    method = "POST"
+    # plone.app.z3cform: renders the _authenticator and checks it when a button is clicked
+    enableCSRFProtection = True
 
     def updateWidgets(self):
-        super(ReplaceListForm, self).updateWidgets()
-        if 'ajax_load' in self.request:
-            self.widgets['contacts'].mode = HIDDEN_MODE
+        super().updateWidgets()
+        if "ajax_load" in self.request:
+            self.widgets["contacts"].mode = HIDDEN_MODE
 
-    @button.buttonAndHandler(PMF('Save'), name="save")
+    @button.buttonAndHandler(PMF("Save"), name="save")
     def applySave(self, action):
         PostOnly(self.request)
         data, errors = self.extractData()
         if errors:
             return
 
-        contacts = data['contacts']
-        contact_list = ploneapi.content.get(UID=data['contact_list'])
+        contacts = data["contacts"]
+        contact_list = ploneapi.content.get(UID=data["contact_list"])
         added_contacts = api.replace_list(contact_list, contacts)
         IStatusMessage(self.request).add(
-                           _('msg_list_replaced',
-                             default=u"${title} list contacts has been replaced by ${num} contact(s)",
-                             mapping={'num': len(added_contacts),
-                                      'title': contact_list.Title()}))
+            _(
+                "msg_list_replaced",
+                default="${title} list contacts has been replaced by ${num} contact(s)",
+                mapping={"num": len(added_contacts), "title": contact_list.Title()},
+            )
+        )
 
         self.request.response.redirect(contact_list.absolute_url())
 
-    @button.buttonAndHandler(PMF('Cancel'), name="cancel")
+    @button.buttonAndHandler(PMF("Cancel"), name="cancel")
     def applyCancel(self, action):
         self.request.response.redirect(self.context.absolute_url())
 
 
 replace_list = wrap_form(
     ReplaceListForm,
-    label=_(u"Replace list contacts"),
-    description=_('help_replace_list',
-                  default=u"Replace contacts of selected list with selected contacts")
+    label=_("Replace list contacts"),
+    description=_(
+        "help_replace_list",
+        default="Replace contacts of selected list with selected contacts",
+    ),
 )

@@ -8,8 +8,11 @@ Test Teardown  Close all browsers
 
 *** Test Cases ***
 The action opens a modal with the contact
+    # plone4-bug: Plone 4.3.11+ ignores the contact given in the GET request of the action (form
+    # without allow_prefill_from_GET_request): the form has no contact, saving fails (MIGRATION.md)
+    [Tags]  plone4-bug
     Open the "Add to list" modal  ${ARMY_URL}
-    Element should contain  ${MODAL} .modal-title  Add to list
+    The modal title contains  Add to list
     # the contact is a hidden field of the form
     Page should contain element
     ...  ${MODAL} #formfield-form-widgets-contacts input[type=hidden][value="/plone/mydirectory/armeedeterre"]
@@ -32,6 +35,9 @@ A new list needs a title
     Wait until element contains  ${MODAL} #formfield-form-widgets-title  Title of the new list is required
 
 Add a contact to a new list
+    # plone4-bug: Plone 4.3.11+ ignores the contact given in the GET request of the action (form
+    # without allow_prefill_from_GET_request): the form has no contact, saving fails (MIGRATION.md)
+    [Tags]  plone4-bug
     Open the "Add to list" modal  ${ARMY_URL}
     Input text  ${MODAL} #form-widgets-title  My new list
     Input text  ${MODAL} #form-widgets-description  Created from a contact
@@ -42,6 +48,9 @@ Add a contact to a new list
     The list contains  ${PLONE_URL}/Members/testuser/my-new-list  My new list  Created from a contact  Armée de terre
 
 Add a contact to an existing list
+    # plone4-bug: Plone 4.3.11+ ignores the contact given in the GET request of the action (form
+    # without allow_prefill_from_GET_request): the form has no contact, saving fails (MIGRATION.md)
+    [Tags]  plone4-bug
     Create an empty list  testuser  existing  Existing list
     Open the "Add to list" modal  ${ARMY_URL}/corpsa
     Select from list by label  ${MODAL} #form-widgets-contact_list  Existing list
@@ -51,6 +60,9 @@ Add a contact to an existing list
     The list contains  ${PLONE_URL}/Members/testuser/existing  Corps A
 
 Add the same contact twice
+    # plone4-bug: Plone 4.3.11+ ignores the contact given in the GET request of the action (form
+    # without allow_prefill_from_GET_request): the form has no contact, saving fails (MIGRATION.md)
+    [Tags]  plone4-bug
     Add the contact to a new list  ${ARMY_URL}  My new list
     Open the "Add to list" modal  ${ARMY_URL}
     Select from list by label  ${MODAL} #form-widgets-contact_list  My new list
@@ -63,14 +75,12 @@ Add the same contact twice
 Cancel closes the modal
     Open the "Add to list" modal  ${ARMY_URL}
     Input text  ${MODAL} #form-widgets-title  Cancelled list
-    Click button  css=.modal-footer #form-buttons-cancel
+    Cancel the modal
     The modal is closed
     Location should be  ${ARMY_URL}
     Go to  ${PLONE_URL}/Members/testuser/cancelled-list
-    Page should contain  This page does not seem to exist
+    The page is not found
 
 The action is only on contacts
     Go to  ${PLONE_URL}/folder
-    Click element  css=#plone-contentmenu-actions > a
-    Wait until element is visible  css=#plone-contentmenu-actions-delete
-    Page should not contain element  css=#plone-contentmenu-actions-contactlist-addtolist
+    The content action is available  contactlist-addtolist  ${False}

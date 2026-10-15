@@ -19,7 +19,7 @@ from zope.i18nmessageid import MessageFactory
 from zope.interface import Interface
 from zope.schema.interfaces import InvalidValue
 
-PMF = MessageFactory('plone')
+PMF = MessageFactory("plone")
 
 
 class IAddToList(Interface):
@@ -27,30 +27,32 @@ class IAddToList(Interface):
     contact_list = MasterSelectField(
         required=True,
         title=_("List where to add selected item(s)"),
-        vocabulary='collective.contact.contactlist.addtolist',
+        vocabulary="collective.contact.contactlist.addtolist",
         slave_fields=(
-            {'name': 'title',
-             # 'masterSelector': 'input[name="form.widgets.contact_list"]',
-             'masterId': 'form-widgets-contact_list',
-             'slaveID': '#form-widgets-title',
-             'action': 'show',
-             'hide_values': (CREATE_NEW_KEY,),
-             'siblings': True,
+            {
+                "name": "title",
+                # 'masterSelector': 'input[name="form.widgets.contact_list"]',
+                "masterId": "form-widgets-contact_list",
+                "slaveID": "#form-widgets-title",
+                "action": "show",
+                "hide_values": (CREATE_NEW_KEY,),
+                "siblings": True,
             },
-            {'name': 'description',
-             # 'masterSelector': 'input[name="form.widgets.contact_list"]',
-             'masterId': 'form-widgets-contact_list',
-             'slaveID': '#form-widgets-description',
-             'action': 'show',
-             'hide_values': (CREATE_NEW_KEY,),
-             'siblings': True,
+            {
+                "name": "description",
+                # 'masterSelector': 'input[name="form.widgets.contact_list"]',
+                "masterId": "form-widgets-contact_list",
+                "slaveID": "#form-widgets-description",
+                "action": "show",
+                "hide_values": (CREATE_NEW_KEY,),
+                "siblings": True,
             },
-            )
+        ),
     )
 
-    title = schema.TextLine(title=_(u"List title"), required=False)
+    title = schema.TextLine(title=_("List title"), required=False)
 
-    description = schema.Text(title=PMF(u"Description"), required=False)
+    description = schema.Text(title=PMF("Description"), required=False)
 
     contacts = contactsschema.ContactList()
 
@@ -60,74 +62,84 @@ class AddToListForm(form.Form):
     fields = field.Fields(IAddToList)
     ignoreContext = True
     ignoreRequest = False
-    method = 'POST'
+    method = "POST"
+    # plone.app.z3cform: renders the _authenticator and checks it when a button is clicked
+    enableCSRFProtection = True
     # the "Add to list" action opens the form with the contact in the GET request
     allow_prefill_from_GET_request = True
 
     def updateWidgets(self):
-        super(AddToListForm, self).updateWidgets()
-        if 'ajax_load' in self.request:
-            self.widgets['contacts'].mode = HIDDEN_MODE
+        super().updateWidgets()
+        if "ajax_load" in self.request:
+            self.widgets["contacts"].mode = HIDDEN_MODE
 
     def extractData(self, setErrors=True):
-        data, errors = super(AddToListForm, self).extractData(setErrors=setErrors)
+        data, errors = super().extractData(setErrors=setErrors)
         data, errors = self.checkNewListTitle(data, errors)
         return data, errors
 
     def checkNewListTitle(self, data, errors):
-        if data['contact_list'] == CREATE_NEW_KEY and not data.get('title', ''):
+        if data["contact_list"] == CREATE_NEW_KEY and not data.get("title", ""):
             message = _("Title of the new list is required")
-            errors = self.addError(errors, 'title', message)
+            errors = self.addError(errors, "title", message)
 
         return data, errors
 
-    @button.buttonAndHandler(PMF('Save'), name="save")
+    @button.buttonAndHandler(PMF("Save"), name="save")
     def applySave(self, action):
         PostOnly(self.request)
         data, errors = self.extractData()
         if errors:
             return
 
-        contacts = data['contacts']
-        if data['contact_list'] == CREATE_NEW_KEY:
-            title, description = data['title'], data['description']
-            contact_list = api.create_list(title, description or u"", contacts)
+        contacts = data["contacts"]
+        if data["contact_list"] == CREATE_NEW_KEY:
+            title, description = data["title"], data["description"]
+            contact_list = api.create_list(title, description or "", contacts)
             IStatusMessage(self.request).add(
-                               _('msg_new_list_added',
-                                 default=u"New list added with ${num} contact(s) : ${title}",
-                                 mapping={'num': len(contacts),
-                                          'title': title}))
+                _(
+                    "msg_new_list_added",
+                    default="New list added with ${num} contact(s) : ${title}",
+                    mapping={"num": len(contacts), "title": title},
+                )
+            )
         else:
-            contact_list = ploneapi.content.get(UID=data['contact_list'])
+            contact_list = ploneapi.content.get(UID=data["contact_list"])
             added_contacts = api.extend_list(contact_list, contacts)
             IStatusMessage(self.request).add(
-                               _('msg_list_updated',
-                                 default=u"${title} list updated with ${num} contact(s)",
-                                 mapping={'num': len(added_contacts),
-                                          'title': contact_list.Title()}))
+                _(
+                    "msg_list_updated",
+                    default="${title} list updated with ${num} contact(s)",
+                    mapping={"num": len(added_contacts), "title": contact_list.Title()},
+                )
+            )
 
         self.request.response.redirect(contact_list.absolute_url())
 
     def addError(self, errors, fieldname, message):
-        error = ErrorViewSnippet(InvalidValue(fieldname),
-                            self.request, self.widgets[fieldname],
-                            self.fields[fieldname].field, self,
-                            None)
+        error = ErrorViewSnippet(
+            InvalidValue(fieldname),
+            self.request,
+            self.widgets[fieldname],
+            self.fields[fieldname].field,
+            self,
+            None,
+        )
         error.message = message
         errors += (error,)
         self.widgets[fieldname].error = error
         self.widgets.errors += (error,)
         return errors
 
-    @button.buttonAndHandler(PMF('Cancel'), name="cancel")
+    @button.buttonAndHandler(PMF("Cancel"), name="cancel")
     def applyCancel(self, action):
         self.request.response.redirect(self.context.absolute_url())
 
 
 add_to_list = wrap_form(
     AddToListForm,
-    label=_(u"Add to list"),
-    description=_(u"Add selected contacts to selected list"),
+    label=_("Add to list"),
+    description=_("Add selected contacts to selected list"),
 )
 
 

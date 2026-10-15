@@ -13,4 +13,4 @@ class ContactListSchemaPolicy(DexteritySchemaPolicy):
     """Schema policy for ContactList content type"""
 
     def bases(self, schemaName, tree):
-        return (IContactList, )
+        return (IContactList,)

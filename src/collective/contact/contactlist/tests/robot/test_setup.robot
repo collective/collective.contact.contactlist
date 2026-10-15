@@ -6,50 +6,41 @@ Test Teardown  Close all browsers
 
 
 *** Variables ***
-${ADDONS_URL}  ${PLONE_URL}/prefs_install_products_form
 ${PRODUCT}  collective.contact.contactlist
-${ERROR_PAGE}  there seems to be an error
 
 
 *** Keywords ***
-Click the add-on button
-    [Arguments]  ${action}
-    Go to  ${ADDONS_URL}
-    Click button  xpath=//input[@name="${action}_product"][@value="${PRODUCT}"]/following-sibling::button
-    Page should not contain  ${ERROR_PAGE}
-
 The "Add to list" action is available
     [Arguments]  ${expected}=${True}
     Go to  ${ARMY_URL}
-    Click element  css=#plone-contentmenu-actions > a
-    Wait until element is visible  css=#plone-contentmenu-actions-delete
-    IF  ${expected}
-        Page should contain element  css=#plone-contentmenu-actions-contactlist-addtolist
-    ELSE
-        Page should not contain element  css=#plone-contentmenu-actions-contactlist-addtolist
-    END
+    The content action is available  contactlist-addtolist  ${expected}
 
 
 *** Test Cases ***
 Uninstall and reinstall the add-on
     The "Add to list" action is available
-    Click the add-on button  uninstall
+    Uninstall the add-on  ${PRODUCT}
     The "Add to list" action is available  ${False}
-    Page should not contain element  css=#personaltools-contact-contactlist-mylists
-    Click the add-on button  install
+    The personal action is not available  contact-contactlist-mylists
+    Install the add-on  ${PRODUCT}
     The "Add to list" action is available
-    Page should contain element  css=#personaltools-contact-contactlist-mylists
+    The personal action links to  contact-contactlist-mylists  ${PLONE_URL}/Members/testuser
 
 A site without Members folder
     [Documentation]  as a site created without the example content
     Delete content  /plone/Members
     Go to  ${ADDONS_URL}
-    Page should not contain  ${ERROR_PAGE}
+    The page is not an error
     Go to  ${ARMY_URL}
-    Page should not contain  ${ERROR_PAGE}
-    Page should not contain element  css=#personaltools-contact-contactlist-mylists
-    # reinstalling creates the Members folder
-    Click the add-on button  uninstall
-    Click the add-on button  install
+    The page is not an error
+    The personal action is not available  contact-contactlist-mylists
+
+Reinstalling creates the Members folder
+    [Documentation]  Plone 6 creates it only with the example content
+    # plone6-only: Plone 4 creates the Members folder with the site, not the add-on (not run on Plone 4)
+    [Tags]  plone6-only
+    Delete content  /plone/Members
+    Uninstall the add-on  ${PRODUCT}
+    Install the add-on  ${PRODUCT}
     Go to  ${PLONE_URL}/Members
-    Page should not contain  This page does not seem to exist
+    Page should not contain  ${NOT_FOUND_TEXT}

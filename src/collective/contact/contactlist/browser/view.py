@@ -7,4 +7,4 @@ class MyListsURL(BrowserView):
     def __call__(self):
         adapter = get_tool()
         container = adapter.get_container()
-        return container and container.absolute_url() or u""
+        return container and container.absolute_url() or ""

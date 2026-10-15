@@ -1,3 +1,6 @@
+.. image:: https://github.com/collective/collective.contact.contactlist/actions/workflows/meta.yml/badge.svg?branch=master
+    :target: https://github.com/collective/collective.contact.contactlist/actions/workflows/meta.yml
+
 ==========================================================================
 collective.contact.contactlist
 ==========================================================================
@@ -13,7 +16,7 @@ Lists handles any contact type: organization, person or held position.
 Installation
 ============
 
-You need to turn on Member folder creation.
+Lists are stored in the user folders: the default profile enables their creation.
 
 API
 ===
@@ -61,7 +64,7 @@ If you have collective.contact.facetednav installed,
 if you have enabled contact selection on your faceted navigation
 you can batch select contacts and add them to lists
 
-You have a new widget "contacts list", wich display your lists.
+You have a new widget "contacts list", which display your lists.
 It filters your results on the contents of the lists you have selected.
 
 Compatible with eea.facetednav > 10
@@ -84,14 +87,6 @@ you can filter choices of a ContactChoice (or ContactList) field on the contacts
         )
 
 This works like ContactSourceBinder from collective.contact.widget, but it also gets a
-countact_lists_query parameter, wich is a catalog query dictionnary. Contacts displayed by formwidget
+countact_lists_query parameter, which is a catalog query dictionary. Contacts displayed by formwidget
 query are filtered on the union or intersection (depending on contact_lists_operator) of the lists we get using this query.
 
-
-Tests
-=====
-
-This add-on is tested using Travis CI. The current status of the add-on is :
-
-.. image:: https://secure.travis-ci.org/collective/collective.contact.contactlist.png
-    :target: http://travis-ci.org/collective/collective.contact.contactlist

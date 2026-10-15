@@ -1,6 +1,6 @@
+/* Faceted navigation integration: "Add to list" and "Replace list" batch actions of collective.contact.facetednav.
+ * Classic script: contactfacetednav, Faceted and the plone-modal pattern are only used when a button is clicked. */
 var contactcontactlist = {};
-
-/* Faceted navigation integration */
 
 contactcontactlist.facetednav_addtolist = function () {
     contactcontactlist._facetednav_open_modal('@@contactlist.add-to-list', false);
@@ -11,43 +11,45 @@ contactcontactlist.facetednav_replacelist = function () {
 };
 
 contactcontactlist._facetednav_open_modal = function (view_name, select_checked_list) {
-    var link = $('<a class="pat-plone-modal"></a>')
-        .attr('href', $('body').data('portal-url') + '/' + view_name + '?ajax_load=1')
-        .attr('data-pat-plone-modal', '{"actionOptions": {"displayInModal": false, "reloadWindowOnClose": false}}');
-    // the link is not in the page: modal events don't bubble to document, listen on it
+    // the modal is built next to its link: the link must be in the page (the faceted refresh removes it).
+    // Options in its own attribute: the parser merges the body's data-pat-plone-modal over patPloneModal(options)
+    var link = jQuery('<a hidden></a>')
+        .attr('href', jQuery('body').data('portal-url') + '/' + view_name + '?ajax_load=1')
+        .attr('data-pat-plone-modal', JSON.stringify({
+            actionOptions: {displayInModal: false, reloadWindowOnClose: false}
+        }))
+        .appendTo('#contacts-facetednav-batchactions');
+    // first render only: a form redrawn with errors keeps the posted contacts
     link.one('after-render.plone-modal.patterns', function () {
         var modal = link.data('pattern-plone-modal').$modal;
-        var pathes = contactfacetednav.contacts.selection_pathes();
-        modal.find('#formfield-form-widgets-contacts').each(function () {
-            contactcontactlist.populate_hidden_field(this, pathes);
-        });
-        // in replace list modal, select checked list in eea contact list
+        contactcontactlist.populate_hidden_field(
+            modal.find('#formfield-form-widgets-contacts'),
+            contactfacetednav.contacts.selection_pathes()
+        );
+        // in the replace list modal, select the list checked in the "Contact lists" filter
         if (select_checked_list) {
-            $('.faceted-contactlist-widget input:checked').first().each(function () {
-                modal.find('#form-widgets-contact_list').val($(this).val());
-            });
+            var checked = jQuery('.faceted-contactlist-widget input:checked').first();
+            if (checked.length) {
+                modal.find('#form-widgets-contact_list').val(checked.val());
+            }
         }
     });
+    // saved: no page reload, the status message goes to the batch actions, results and list counts are refreshed
     link.on('formActionSuccess.plone-modal.patterns', function (e, response) {
-        contactfacetednav.store_overlay_messages($('<div>').append($.parseHTML(response)));
+        contactfacetednav.store_overlay_messages(jQuery('<div>').append(jQuery.parseHTML(response)));
         Faceted.Form.do_form_query();
-        $('.faceted-contactlist-widget').each(function () {
-            var widget = $(this);
-            var sortcountable = widget.hasClass('faceted-sortcountable');
-            Faceted.Widgets[this.id.split('_')[0]].count(sortcountable);
+        jQuery('.faceted-contactlist-widget').each(function () {
+            Faceted.Widgets[this.id.split('_')[0]].count(jQuery(this).hasClass('faceted-sortcountable'));
         });
     });
-    window.__patternslib_registry['plone-modal'].init(link);
-    link.trigger('click');
+    link.patPloneModal().trigger('click');
 };
 
 contactcontactlist.populate_hidden_field = function (field, pathes) {
-    var elt = jQuery(field);
-    for (var num in pathes) {
-        if (pathes.hasOwnProperty(num)) {
-            var path = pathes[num];
-            var input = jQuery('<input type="hidden" value="' + path + '" class="hidden-widget" name="form.widgets.contacts:list" originalvalue="' + path + '"/>');
-            elt.append(input);
-        }
-    }
+    jQuery.each(pathes, function (num, path) {
+        jQuery('<input type="hidden" class="hidden-widget" name="form.widgets.contacts:list" />')
+            .attr('value', path)
+            .attr('originalvalue', path)
+            .appendTo(field);
+    });
 };

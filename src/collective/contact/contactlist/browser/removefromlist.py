@@ -11,12 +11,18 @@ class RemoveFromList(BrowserView):
 
     def __call__(self):
         PostOnly(self.request)
-        uids = self.request['uids']
+        uids = self.request["uids"]
         old_contacts = get_contacts(self.context)
         new_contacts = [c for c in old_contacts if IUUID(c) not in uids]
         replace_list(self.context, new_contacts)
-        IStatusMessage(self.request).add(_('msg_removed_from_list',
-               default=u"${num} contacts have been removed from list ${title}",
-               mapping={'num': len(old_contacts) - len(new_contacts),
-                        'title': self.context.Title()}))
+        IStatusMessage(self.request).add(
+            _(
+                "msg_removed_from_list",
+                default="${num} contacts have been removed from list ${title}",
+                mapping={
+                    "num": len(old_contacts) - len(new_contacts),
+                    "title": self.context.Title(),
+                },
+            )
+        )
         self.request.response.redirect(self.context.absolute_url())
