@@ -1,6 +1,5 @@
 """Installer for the collective.contact.contactlist package."""
 
-from setuptools import find_packages
 from setuptools import setup
 
 long_description = (
@@ -38,8 +37,6 @@ setup(
     author_email="thomas.desvenain@gmail.com",
     url="http://pypi.python.org/pypi/collective.contact.contactlist",
     license="GPL",
-    packages=find_packages("src", exclude=["ez_setup"]),
-    package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
     python_requires=">=3.10",
