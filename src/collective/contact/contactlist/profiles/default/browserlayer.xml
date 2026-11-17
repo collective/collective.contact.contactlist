@@ -1,7 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer
-    name="collective.contact.contactlist"
-    interface="collective.contact.contactlist.interfaces.ICollectiveContactContactlistLayer"
+  <layer interface="collective.contact.contactlist.interfaces.ICollectiveContactContactlistLayer"
+         name="collective.contact.contactlist"
   />
 </layers>

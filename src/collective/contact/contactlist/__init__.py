@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
 """Init and utils."""
-import logging
-log = logging.getLogger('collective.contact.contactlist')
 
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('collective.contact.contactlist')
+import logging
+
+log = logging.getLogger("collective.contact.contactlist")
+
+_ = MessageFactory("collective.contact.contactlist")
 
 
 def initialize(context):

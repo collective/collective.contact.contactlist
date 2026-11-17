@@ -1,59 +1,66 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:zcml="http://namespaces.zope.org/zcml"
     xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="collective.contact.contactlist">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="collective.contact.contactlist"
+    >
 
-    <!-- Publish static files -->
-    <browser:resourceDirectory
+  <!-- Publish static files -->
+  <browser:resourceDirectory
       name="collective.contact.contactlist"
       directory="static"
       />
 
   <browser:view
-    for="*"
-    name="contactlist.mylists-url"
-    class=".view.MyListsURL"
-    permission="zope2.View"
-    />
+      name="contactlist.mylists-url"
+      for="*"
+      class=".view.MyListsURL"
+      permission="zope2.View"
+      />
 
   <browser:page
-    for="*"
-    name="contactlist.can-add-to-list"
-    class=".addtolist.CanAddToList"
-    permission="zope2.View"
-    />
+      name="contactlist.can-add-to-list"
+      for="*"
+      class=".addtolist.CanAddToList"
+      permission="zope2.View"
+      />
 
   <browser:page
-    for="*"
-    name="contactlist.replace-list"
-    class=".replacelist.replace_list"
-    permission="zope2.View"
-    />
+      name="contactlist.replace-list"
+      for="*"
+      class=".replacelist.replace_list"
+      permission="zope2.View"
+      />
 
   <browser:page
-    for="*"
-    name="contactlist.add-to-list"
-    class=".addtolist.add_to_list"
-    permission="zope2.View"
-    />
+      name="contactlist.add-to-list"
+      for="*"
+      class=".addtolist.add_to_list"
+      permission="zope2.View"
+      />
 
   <browser:page
-    for="*"
-    name="contactlist.remove-from-list"
-    class=".removefromlist.RemoveFromList"
-    permission="zope2.View"
-    />
+      name="contactlist.remove-from-list"
+      for="*"
+      class=".removefromlist.RemoveFromList"
+      permission="zope2.View"
+      />
 
 
-  <include package=".eeawidget"
-           zcml:condition="installed eea.facetednavigation" />
+  <include
+      package=".eeawidget"
+      zcml:condition="installed eea.facetednavigation"
+      />
 
-  <include file="facetednav.zcml"
-           zcml:condition="installed collective.contact.facetednav" />
+  <include
+      file="facetednav.zcml"
+      zcml:condition="installed collective.contact.facetednav"
+      />
 
-  <include file="excelexport.zcml"
-           zcml:condition="installed collective.excelexport" />
+  <include
+      file="excelexport.zcml"
+      zcml:condition="installed collective.excelexport"
+      />
 
 </configure>

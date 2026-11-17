@@ -1,6 +1,9 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="collective.contact.contactlist">
-   <utility name="schema_policy_contact_list"
-            factory=".contactlist.ContactListSchemaPolicy" />
+    i18n_domain="collective.contact.contactlist"
+    >
+  <utility
+      factory=".contactlist.ContactListSchemaPolicy"
+      name="schema_policy_contact_list"
+      />
 </configure>

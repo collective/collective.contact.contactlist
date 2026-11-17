@@ -1,74 +1,55 @@
+/* Faceted navigation integration: "Add to list" and "Replace list" batch actions of collective.contact.facetednav.
+ * Classic script: contactfacetednav, Faceted and the plone-modal pattern are only used when a button is clicked. */
 var contactcontactlist = {};
 
-contactcontactlist.init = function () {
-    jQuery('#plone-contentmenu-actions-contactlist-addtolist').prepOverlay({
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#form',
-        closeselector: '[name="form.buttons.cancel"]',
-        noform: function () {
-            return 'reload';
-        }
-    });
-    jQuery(document).bind('loadInsideOverlay', function (e, el) {
-        var overlay = $(el).closest('.overlay-ajax');
-        var form = jQuery(overlay).find('#form');
-        jQuery('#contacts-facetednav-batchactions').each(function () {
-            var pathes = contactfacetednav.contacts.selection_pathes();
-            jQuery(overlay).find('#formfield-form-widgets-contacts').each(function () {
-                contactcontactlist.populate_hidden_field(this, pathes);
-            });
-        });
-        // in replace list overlay, select checked list in eea contact list
-        if (form.hasClass('kssattr-formname-contactlist.replace-list')) {
-            jQuery('.faceted-contactlist-widget input:checked').first().each(function () {
-                var list_uid = jQuery(this).val();
-                form.find('#form-widgets-contact_list').val(list_uid);
-            });
-        }
-    });
-};
-
-/* Faceted navigation integration */
-
 contactcontactlist.facetednav_addtolist = function () {
-    var url = portal_url + '/@@contactlist.add-to-list';
-    contactcontactlist._facetednav_open_overlay(url);
+    contactcontactlist._facetednav_open_modal('@@contactlist.add-to-list', false);
 };
 
 contactcontactlist.facetednav_replacelist = function () {
-    var url = portal_url + '/@@contactlist.replace-list';
-    contactcontactlist._facetednav_open_overlay(url);
+    contactcontactlist._facetednav_open_modal('@@contactlist.replace-list', true);
 };
 
-contactcontactlist._facetednav_open_overlay = function (url) {
-    jQuery('<a href="' + url + '?ajax_load=1">Edit</a>').prepOverlay({
-        subtype: 'ajax',
-        filter: common_content_filter,
-        formselector: '#form',
-        closeselector: '[name="form.buttons.cancel"]',
-        noform: function (el) {
-            contactfacetednav.store_overlay_messages(el);
-            Faceted.Form.do_form_query();
-            jQuery('.faceted-contactlist-widget').each(function () {
-                var widget = jQuery(this);
-                var sortcountable = widget.hasClass('faceted-sortcountable');
-                Faceted.Widgets[this.id.split('_')[0]].count(sortcountable);
-            });
-            return 'close';
+contactcontactlist._facetednav_open_modal = function (view_name, select_checked_list) {
+    // the modal is built next to its link: the link must be in the page (the faceted refresh removes it).
+    // Options in its own attribute: the parser merges the body's data-pat-plone-modal over patPloneModal(options)
+    var link = jQuery('<a hidden></a>')
+        .attr('href', jQuery('body').data('portal-url') + '/' + view_name + '?ajax_load=1')
+        .attr('data-pat-plone-modal', JSON.stringify({
+            actionOptions: {displayInModal: false, reloadWindowOnClose: false}
+        }))
+        .appendTo('#contacts-facetednav-batchactions');
+    // first render only: a form redrawn with errors keeps the posted contacts
+    link.one('after-render.plone-modal.patterns', function () {
+        var modal = link.data('pattern-plone-modal').$modal;
+        contactcontactlist.populate_hidden_field(
+            modal.find('#formfield-form-widgets-contacts'),
+            contactfacetednav.contacts.selection_pathes()
+        );
+        // in the replace list modal, select the list checked in the "Contact lists" filter
+        if (select_checked_list) {
+            var checked = jQuery('.faceted-contactlist-widget input:checked').first();
+            if (checked.length) {
+                modal.find('#form-widgets-contact_list').val(checked.val());
+            }
         }
-    }).click();
+    });
+    // saved: no page reload, the status message goes to the batch actions, results and list counts are refreshed
+    link.on('formActionSuccess.plone-modal.patterns', function (e, response) {
+        contactfacetednav.store_overlay_messages(jQuery('<div>').append(jQuery.parseHTML(response)));
+        Faceted.Form.do_form_query();
+        jQuery('.faceted-contactlist-widget').each(function () {
+            Faceted.Widgets[this.id.split('_')[0]].count(jQuery(this).hasClass('faceted-sortcountable'));
+        });
+    });
+    link.patPloneModal().trigger('click');
 };
 
 contactcontactlist.populate_hidden_field = function (field, pathes) {
-    var elt = jQuery('#formfield-form-widgets-contacts');
-    for (var num in pathes) {
-        if (pathes.hasOwnProperty(num)) {
-            var path = pathes[num];
-            var input = jQuery('<input type="hidden" value="' + path + '" class="hidden-widget" name="form.widgets.contacts:list" originalvalue="' + path + '"/>');
-            elt.append(input);
-        }
-    }
+    jQuery.each(pathes, function (num, path) {
+        jQuery('<input type="hidden" class="hidden-widget" name="form.widgets.contacts:list" />')
+            .attr('value', path)
+            .attr('originalvalue', path)
+            .appendTo(field);
+    });
 };
-
-jQuery(document).ready(contactcontactlist.init);

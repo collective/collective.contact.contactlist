@@ -1,12 +1,11 @@
-from zope.component import adapts
-from zope.i18n import translate
-
-from plone.app.layout.viewlets.common import ViewletBase
-
-from collective.excelexport.datasources.base import BaseContentsDataSource
-from collective.contact.contactlist.interfaces import IContactList,\
-    ICollectiveContactContactlistLayer
 from collective.contact.contactlist import _
+from collective.contact.contactlist.interfaces import ICollectiveContactContactlistLayer
+from collective.contact.contactlist.interfaces import IContactList
+from collective.excelexport.datasources.base import BaseContentsDataSource
+from plone.app.layout.viewlets.common import ViewletBase
+from zope.component import adapts
+from zope.component import getMultiAdapter
+from zope.i18n import translate
 
 
 class ContactListDataSource(BaseContentsDataSource):
@@ -23,12 +22,15 @@ class ExportLinkViewlet(ViewletBase):
 
     def render(self):
         url = "%s/@@collective.excelexport" % self.context.absolute_url()
-        title = translate(_(u"Excel export list of contacts"),
-                          context=self.request)
-        portal_url = self.site_url
-        return """<a title="%(title)s" href="%(url)s">
-                     <img src="%(portal_url)s/xls.png" />
-                     %(title)s
-                  </a>""" % {'url': url,
-                             'title': title,
-                             'portal_url': portal_url}
+        title = translate(_("Excel export list of contacts"), context=self.request)
+        icon_url = getMultiAdapter(
+            (self.context, self.request), name="iconresolver"
+        ).url("mimetype-application/vnd.ms-excel")
+        return """<a title="{title}" href="{url}">
+                     <img src="{icon_url}" />
+                     {title}
+                  </a>""".format(
+            url=url,
+            title=title,
+            icon_url=icon_url,
+        )
